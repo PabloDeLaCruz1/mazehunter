@@ -13,8 +13,8 @@ var PreLoadScene = new Phaser.Class({
       //loading Screen
       var progressBar = this.add.graphics();
       var progressBox = this.add.graphics();
-      progressBox.fillStyle(0x222222, 0.8);
-      progressBox.fillRect(240, 270, 320, 50);
+      progressBox.fillStyle(0x111111, 0.8);
+      progressBox.fillRect(400, 270, 400, 50);
 
       //Loading text
       var width = this.cameras.main.width;
@@ -28,6 +28,7 @@ var PreLoadScene = new Phaser.Class({
             fill: '#ffffff'
         }
       });
+    //   progressBox.setOrigin
       loadingText.setOrigin(0.5, 0.5);
 
       //Percent text
@@ -54,10 +55,10 @@ var PreLoadScene = new Phaser.Class({
       });
       assetText.setOrigin(0.5, 0.5);
       //Slows loading for testing
-      // this.load.image('logo', './assets/logo.png');
-      // for (var i = 0; i < 500; i++) {
-      //     this.load.image('logo' + i, './assets/logo.png');
-      // }
+    //   this.load.image('logo', './assets/logo.png');
+    //   for (var i = 0; i < 500; i++) {
+    //       this.load.image('logo' + i, './assets/logo.png');
+    //   }
 
       //Event listens for loading screen
 
@@ -67,7 +68,7 @@ var PreLoadScene = new Phaser.Class({
           percentText.setText(parseInt(value * 100) + '%');
           progressBar.clear();
           progressBar.fillStyle(0xffffff, 1);
-          progressBar.fillRect(250, 280, 300 * value, 30);
+          progressBar.fillRect(400, 280, 400 * value, 30);
       });
 
       this.load.on('fileprogress', function (file) {
