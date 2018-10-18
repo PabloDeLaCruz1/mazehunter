@@ -1,59 +1,46 @@
-export default class Menu extends Phaser.Scene {
-    /**
-     *  Show the game title and menu.
-     *
-     *  @extends Phaser.Scene
-     */
-    constructor() {
-      super({key: 'Menu'});
-    }
-  
-    /**
-     *  Responsible for setting up the game objects on the screen.
-     *
-     *  @protected
-     *  @param {object} [data={}] - Initialization parameters.
-     */
-    create(/* data */) {
-      //  Save viewport center coordinates for reference.
-      const x = this.cameras.main.width / 2;
-      const y = this.cameras.main.height / 2;
-  
-      //  Place the Title image above the middle of the screen.
-      this.add.image(x, y - 80, 'title');
-  
-      //  Use a bitmap text object as the face of our start button.
-      const startButton = this.add.bitmapText(x - 160, y + 80, 'font', 'START')
-        .setOrigin(0.5, 1);
-  
-      //  Apply a blink effect to the button using a custom easing function.
-      this.add.tween({
-        targets: [startButton],
-        ease: k => k < 0.5 ? 0 : 1,
-        duration: 250,
-        yoyo: true,
-        repeat: -1,
-        alpha: 0
+var MenuScene = new Phaser.Class({
+
+  Extends: Phaser.Scene,
+
+  initialize:
+
+    function MenuScene() {
+      Phaser.Scene.call(this, {
+        key: 'MenuScene'
       });
-  
-      //  Handle the click or tap of the button using an input zone slightly
-      //  bigger than the text object.
-      this.add.zone(
-        startButton.x - (startButton.width * startButton.originX) - 16,
-        startButton.y - (startButton.height * startButton.originY) - 16,
-        startButton.width + 32,
-        startButton.height + 32
-      )
-        .setInteractive()
-        .once('pointerup', () => this.scene.start('Game'));
-  
-      //  Get the last game high score.
-      const {highScore} = this.scene.get('Game');
-  
-      //  Display the registered highest score of the game.
-      this.add.bitmapText(x + 160, y + 80, 'font', 'HIGH SCORE')
-        .setOrigin(0.5, 1);
-      this.add.bitmapText(x + 160, y + 81, 'font', `${highScore} POINTS`)
-        .setOrigin(0.5, 0);
-    }
+    },
+  preload: function () {
+
+    this.load.image('menu', 'assets/logo.png');
+    this.load.spritesheet('button-audio', 'assets/button-audio.png', {
+      frameWidth: 35,
+      frameHeight: 35
+    });
+    this.load.spritesheet('button-start', 'assets/button-start.png', {
+      frameWidth: 600,
+      frameHeight: 200
+    });
+
+
+  },
+  create: function () {
+
+    this.add.sprite(600, 400, 'menu');
+    let startButton = this.add.image(800 * 0.5, 200, 'button-start', this.startGame, this, 2, 0, 1);
+    startButton.setInteractive();
+
+    startButton.once('pointerup', function () {
+      this.scene.start('GameScene');
+    }, this);
+
+  },
+
+
+  update: function () {
+
+  },
+  startGame: function () {
+    this.game.scene.start("GameScene")
   }
+
+});
