@@ -26,3 +26,4 @@ let player;
 let cursors;
 let score = 0;
 let scoreText;
+let light;

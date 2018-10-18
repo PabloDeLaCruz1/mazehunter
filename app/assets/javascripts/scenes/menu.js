@@ -26,7 +26,7 @@ var MenuScene = new Phaser.Class({
   create: function () {
 
     this.add.sprite(600, 400, 'menu');
-    let startButton = this.add.image(800 * 0.5, 200, 'button-start', this.startGame, this, 2, 0, 1);
+    let startButton = this.add.image(600, 400, 'button-start', this.startGame, this, 2, 0, 1);
     startButton.setInteractive();
 
     startButton.once('pointerup', function () {
