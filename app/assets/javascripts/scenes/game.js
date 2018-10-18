@@ -14,7 +14,13 @@ var GameScene = new Phaser.Class({
     },
     create: function () {
         // create your world here
-        var logo = this.add.image(400, 300, 'logo');
+        this.lights.enable().setAmbientColor(0x000000);
+        light = this.lights.addLight(180, 80, 300).setColor(0xffffff).setIntensity(2).setScrollFactor(0.0);
+
+
+        // var robot = this.add.image(-100, 0, 'robot').setOrigin(0).setScale(0.7);
+
+
 
         // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
         // Phaser's cache (i.e. the name you used in preload)
@@ -28,6 +34,9 @@ var GameScene = new Phaser.Class({
         const tileset = map.addTilesetImage("Maze1Tiles", "tiles");
         const mainLayer = map.createStaticLayer("Tile Layer 1", tileset, 0, 0);
 
+
+        mainLayer.setPipeline('Light2D');
+
         mainLayer.setCollisionByProperty({
             collides: true
         });
@@ -36,7 +45,7 @@ var GameScene = new Phaser.Class({
         //     //Load Player
         player = this.physics.add.sprite(50, 600, 'dude');
         this.physics.add.collider(player, mainLayer);
-
+        player.setDepth(10)
         //   //Player animations
         const anims = this.anims;
         anims.create({
@@ -120,6 +129,14 @@ var GameScene = new Phaser.Class({
 
         // Normalize and scale the velocity so that player can't move faster along a diagonal
         player.body.velocity.normalize().scale(speed);
+
+
+        //Spotlight
+
+            light.x = player.x;
+            light.y = player.y;
+    
+        
 
     }
 });
