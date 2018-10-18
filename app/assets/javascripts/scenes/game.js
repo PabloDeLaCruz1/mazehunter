@@ -36,9 +36,9 @@ var GameScene = new Phaser.Class({
         });
 
         // add an enemy
-        var enemy = this.physics.add.sprite(50, 500, 'dude');
+        var enemy = this.physics.add.sprite(36, 500, 'dude');
         enemy.setTint(0xff0000);
-        enemy.setOrigin(0,0);
+        enemy.setOrigin(0,0.5);
         enemy.goTo = function(x, y){
           // code mostly taken from https://github.com/Jerenaux/pathfinding_tutorial/blob/master/js/game.js
           var tileSize = map.tileWidth;
@@ -90,52 +90,27 @@ var GameScene = new Phaser.Class({
         //   //Player animations
         const anims = this.anims;
         anims.create({
-            key: "misa-left-walk",
-            frames: anims.generateFrameNames("atlas", {
-                prefix: "misa-left-walk.",
-                start: 0,
-                end: 3,
-                zeroPad: 3
-            }),
-            frameRate: 10,
-            repeat: -1
+          key: "left",
+          frames: anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+          frameRate: 10,
+          repeat: -1
         });
         anims.create({
-            key: "misa-right-walk",
-            frames: anims.generateFrameNames("atlas", {
-                prefix: "misa-right-walk.",
-                start: 0,
-                end: 3,
-                zeroPad: 3
-            }),
-            frameRate: 10,
-            repeat: -1
+          key: "idle",
+          frames: [{key: 'dude', frame: 4}],
+          frameRate: 10,
+          repeat: -1
         });
         anims.create({
-            key: "misa-front-walk",
-            frames: anims.generateFrameNames("atlas", {
-                prefix: "misa-front-walk.",
-                start: 0,
-                end: 3,
-                zeroPad: 3
-            }),
-            frameRate: 10,
-            repeat: -1
-        });
-        anims.create({
-            key: "misa-back-walk",
-            frames: anims.generateFrameNames("atlas", {
-                prefix: "misa-back-walk.",
-                start: 0,
-                end: 3,
-                zeroPad: 3
-            }),
-            frameRate: 10,
-            repeat: -1
+          key: "right",
+          frames: anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+          frameRate: 10,
+          repeat: -1
         });
 
+        
         //   //Enable keyboard movement
-        //   cursors = this.input.keyboard.createCursorKeys();
+          cursors = this.input.keyboard.createCursorKeys();
         //   scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
         bombs = this.physics.add.group();
@@ -151,24 +126,32 @@ var GameScene = new Phaser.Class({
 
     update: function (time, delta) {
         // Stop any previous movement from the last frame
-        cursors = this.input.keyboard.createCursorKeys();
+        // cursors = this.input.keyboard.createCursorKeys();
         let speed = 175;
         let prevVelocity = player.body.velocity.clone();
 
+        if (prevVelocity.x == 0 && prevVelocity.y == 0){
+          player.anims.play('idle');
+        }
         player.body.setVelocity(0);
 
         // Horizontal movement
         if (cursors.left.isDown) {
             player.body.setVelocityX(-100);
+            globalAnim = player.anims;
+            player.anims.play('left', true);
         } else if (cursors.right.isDown) {
             player.body.setVelocityX(100);
+            player.anims.play('right', true);
         }
 
         // Vertical movement
         if (cursors.up.isDown) {
             player.body.setVelocityY(-100);
+            player.anims.play('right', true);
         } else if (cursors.down.isDown) {
             player.body.setVelocityY(100);
+            player.anims.play('right', true);
         }
 
         // Normalize and scale the velocity so that player can't move faster along a diagonal
