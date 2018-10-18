@@ -13,15 +13,6 @@ var GameScene = new Phaser.Class({
 
     },
     create: function () {
-        // create your world here
-        this.lights.enable().setAmbientColor(0x000000);
-        light = this.lights.addLight(180, 80, 300).setColor(0xffffff).setIntensity(2).setScrollFactor(0.0);
-
-
-        // var robot = this.add.image(-100, 0, 'robot').setOrigin(0).setScale(0.7);
-
-
-
         // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
         // Phaser's cache (i.e. the name you used in preload)
 
@@ -34,17 +25,67 @@ var GameScene = new Phaser.Class({
         const tileset = map.addTilesetImage("Maze1Tiles", "tiles");
         const mainLayer = map.createStaticLayer("Tile Layer 1", tileset, 0, 0);
 
+        this.finder = createPathFinder(map);
 
-        mainLayer.setPipeline('Light2D');
+        // this.lights.enable().setAmbientColor(0x000000);
+        // light = this.lights.addLight(180, 80, 300).setColor(0xffffff).setIntensity(2).setScrollFactor(0.0);
+        // mainLayer.setPipeline('Light2D');
 
         mainLayer.setCollisionByProperty({
             collides: true
         });
 
+        // add an enemy
+        var enemy = this.physics.add.sprite(50, 500, 'dude');
+        enemy.setTint(0xff0000);
+        enemy.setOrigin(0,0);
+        enemy.goTo = function(x, y){
+          // code mostly taken from https://github.com/Jerenaux/pathfinding_tutorial/blob/master/js/game.js
+          var tileSize = map.tileWidth;
+          var toX = Math.floor(x/tileSize);
+          var toY = Math.floor(y/tileSize);
+          var fromX = Math.floor(this.x/tileSize);
+          var fromY = Math.floor(this.y/tileSize);
+          var entity = this;
+          this.scene.finder.findPath(fromX, fromY, toX, toY, function( path ) {
+            if (path === null) {
+              console.warn("Path was not found.");
+            } else {
+              entity.followPath(path);
+            }
+          });
+          this.scene.finder.calculate();
+        }
+
+        enemy.followPath = function(path){
+          console.log(path);
+          var tweens = [];
+          for(var i = 0; i < path.length-1; i++){
+            var ex = path[i+1].x;
+            var ey = path[i+1].y;
+            tweens.push({
+              targets: this,
+              x: {value: ex*map.tileWidth, duration: 200},
+              y: {value: ey*map.tileHeight, duration: 200}
+            });
+          }
+
+          this.scene.tweens.timeline({
+            tweens: tweens
+          });
+        }
+
+        this.camera = this.cameras.main;
+
+        this.input.on('pointerup', function(pointer){
+          var x = this.scene.camera.scrollX + pointer.x;
+          var y = this.scene.camera.scrollY + pointer.y;
+          enemy.goTo(x,y);
+        });
 
         //     //Load Player
         player = this.physics.add.sprite(50, 600, 'dude');
-        this.physics.add.collider(player, mainLayer);
+        
         player.setDepth(10)
         //   //Player animations
         const anims = this.anims;
@@ -102,7 +143,10 @@ var GameScene = new Phaser.Class({
         // this.physics.add.collider(bombs, platforms);
 
         this.physics.add.collider(player, bombs, hitBomb, null, this);
-
+        // physics collisions
+        this.physics.add.collider(player, mainLayer);
+        this.physics.add.collider(enemy, mainLayer);
+        this.physics.add.overlap(player, enemy, collidePlayerEnemy);
     },
 
     update: function (time, delta) {
@@ -133,10 +177,50 @@ var GameScene = new Phaser.Class({
 
         //Spotlight
 
-            light.x = player.x;
-            light.y = player.y;
+        // light.x = player.x;
+        // light.y = player.y;
     
         
 
-    }
+    },
 });
+
+function createPathFinder(map){
+  // takes a map object and creates an EasyStar path finder from it
+  // Most of this code is taken from: http://www.dynetisgames.com/2018/03/06/pathfinding-easystar-phaser-3/
+  // instantiate a new pathfinder object
+  var finder = new EasyStar.js();
+
+  // first we have to create a 2D grid out of the tile IDs in our map
+  var grid = [];
+  for(var y = 0; y < map.height; y++){
+    var col = [];
+    for(var x = 0; x < map.width; x++){
+      // In each cell we store the ID of the tile, which corresponds
+      // to its index in the tileset of the map ("ID" field in Tiled)
+      col.push(map.getTileAt(x,y).index);
+    }
+    grid.push(col);
+  }
+  finder.setGrid(grid);
+
+  // now create a list of walkable tiles by only choosing the ones without the "collides" property
+  var walkable = [];
+  // get the tileset, and its property list
+  var tileset = map.tilesets[0];
+  var properties = tileset.tileProperties;
+  // loop through properties, and add those tiles which have "collides: false" to the walkable list
+  for (let i = tileset.firstgid-1; i < tileset.total-1; i++){
+    // if collides is false, add the tile to walkable
+    if (properties[i] && !properties[i].collides) walkable.push(i+1);
+  }
+  finder.setAcceptableTiles(walkable);
+
+  globalTiles = tileset;
+  globalFinder = finder;
+  return finder;
+}
+
+function collidePlayerEnemy(player, enemy){
+  player.setTint(0xff0000);
+}
