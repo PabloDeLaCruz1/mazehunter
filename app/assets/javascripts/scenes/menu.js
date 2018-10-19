@@ -11,6 +11,8 @@ var MenuScene = new Phaser.Class({
     },
   preload: function () {
 
+    this.load.image('dark-smoke', 'assets/particles/smoke-puff.png');
+    this.load.image('white-smoke', 'assets/particles/smoke0.png');
     this.load.image('logo', 'assets/logo.png');
     this.load.image('background', 'assets/menu_background.png');
 
@@ -18,10 +20,7 @@ var MenuScene = new Phaser.Class({
       frameWidth: 35,
       frameHeight: 35
     });
-    this.load.image('button-start', 'assets/button-start.png', {
-      frameWidth: 600,
-      frameHeight: 200
-    });
+    this.load.image('button-start', 'assets/button-start.png');
 
     this.load.bitmapFont('desyrel', 'assets/desyrel.png', 'assets/desyrel.xml');
 
@@ -32,28 +31,31 @@ var MenuScene = new Phaser.Class({
 
     this.add.sprite(600, 200, 'logo');
 
-    let startButton = this.add.image(600, 500, 'button-start', this.startGame, this, 2, 0, 1);
+    let startButton = this.add.image(600, 500, 'button-start', this.startGame, this, 5, 0, 1);
     let multiplayerButton = this.add.image(600, 600, 'button-start', this.startGame, this, 2, 0, 1);
     let howToButton = this.add.image(600, 700, 'button-start', this.startGame, this, 2, 0, 1);
 
-    startButton.setInteractive();
 
     //Button Events 
     startButton.once('pointerup', function () {
       this.scene.start('GameScene');
     }, this);
 
-    startButton.on('pointerover', function () {
+    [startButton, multiplayerButton, howToButton].forEach(btn => {
+      btn.setInteractive();
+      btn.on('pointerover', function () {
 
-      this.setTint(0xff0000);
+        this.setTint(0xff0000);
 
-    });
+      });
 
-    startButton.on('pointerout', function () {
+      btn.on('pointerout', function () {
 
-      this.setTint();
+        this.setTint();
 
-    });
+      });
+    })
+
 
     var startButtonText = this.add.dynamicBitmapText(550, 480, 'desyrel', 'START!', 32);
     var multiplayerButtonText = this.add.dynamicBitmapText(490, 580, 'desyrel', 'MULTIPLAYER', 32);
@@ -73,6 +75,63 @@ var MenuScene = new Phaser.Class({
     //   repeat: -1,
     //   yoyo: true
     // });
+
+    whiteSmoke = this.add.particles('white-smoke').createEmitter({
+      x: 400,
+      y: 300,
+      speed: {
+        min: 20,
+        max: 100
+      },
+      angle: {
+        min: 0,
+        max: 360
+      },
+      scale: {
+        start: 1,
+        end: 0
+      },
+      alpha: {
+        start: 0,
+        end: 0.1
+      },
+      lifespan: 2000,
+      //active: false
+    });
+    whiteSmoke.reserve(1000);
+
+    darkSmoke = this.add.particles('dark-smoke').createEmitter({
+      x: 400,
+      y: 300,
+      speed: {
+        min: 20,
+        max: 100
+      },
+      angle: {
+        min: 0,
+        max: 360
+      },
+      scale: {
+        start: 1,
+        end: 0
+      },
+      alpha: {
+        start: 0,
+        end: 0.1
+      },
+      blendMode: 'SCREEN',
+      lifespan: 2000,
+      //active: false
+
+    });
+    darkSmoke.reserve(1000);
+    darkSmoke.setPosition(700, 750);
+    whiteSmoke.setPosition(800, 750);
+    darkSmoke.setPosition(100, 750);
+    whiteSmoke.setPosition(750, 750);
+    darkSmoke.setPosition(200, 750);
+    whiteSmoke.setPosition(600, 750);
+
 
   },
 
