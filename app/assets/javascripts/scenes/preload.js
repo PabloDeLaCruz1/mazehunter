@@ -89,18 +89,36 @@ let PreLoadScene = new Phaser.Class({
       //Game Assests
       this.load.image('bomb', 'assets/bomb.png');
       this.load.image('sword', 'assets/sword.png', {
-          frameHeight: 32,
-          frameWidth: 32
+        frameHeight: 32,
+        frameWidth: 32
       });
 
       this.load.spritesheet('dude', 'assets/dude.png', {
-          frameWidth: 32,
-          frameHeight: 48
+        frameWidth: 32,
+        frameHeight: 48
       });
 
-      this.load.image("tiles", "assets/Maze1Tiles.png");
-      this.load.tilemapTiledJSON("map", "assets/tilemap2.json");
-    },
+
+      this.load.spritesheet('zombi', 'assets/zombi.png', {
+        frameWidth: 48,
+        frameHeight: 48
+      });
+
+    // this.load.image("walls", "<%= image_url("walls.png") %>");
+    // this.load.image("trees", "<%= image_url("trees_plants.png") %>");
+    // this.load.image("dungeon", "<%= image_url("ProjectUtumno_full.png") %>");
+    // this.load.image("magecity", "<%= image_url("magecity.png") %>")
+    // this.load.tilemapTiledJSON("map", "<%= image_url("map-1.json") %>");
+
+    this.load.image("walls", "assets/walls.png");
+    this.load.image("trees", "assets/trees_plants.png");
+    this.load.image("dungeon", "assets/ProjectUtumno_full.png");
+    this.load.image("magecity", "assets/magecity.png")
+    this.load.tilemapTiledJSON("map", "assets/map-1.json");
+    //OLD MAP
+    // this.load.image("tiles", "assets/Maze1Tiles.png");
+    // this.load.tilemapTiledJSON("map", "assets/tilemap2.json");
+  },
 
   create: function() {
       //   //Player animations
