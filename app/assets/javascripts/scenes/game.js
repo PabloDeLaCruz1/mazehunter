@@ -21,6 +21,7 @@ var GameScene = new Phaser.Class({
             tileWidth: 36,
             tileHeight: 36
         });
+        this.map = map;
 
         const tileset = map.addTilesetImage("Maze1Tiles", "tiles");
         const mainLayer = map.createStaticLayer("Tile Layer 1", tileset, 0, 0);
@@ -37,46 +38,10 @@ var GameScene = new Phaser.Class({
 
         // add an enemy
         var enemy = this.physics.add.sprite(36, 500, 'dude');
-        // var enemy = new Enemy(this, 36, 500, 'dude');
-        console.log(this.physics.add);
-        // console.log(enemy); 
         enemy.setTint(0xff0000);
         enemy.setOrigin(0,0.5);
-        enemy.goTo = function(x, y){
-          // code mostly taken from https://github.com/Jerenaux/pathfinding_tutorial/blob/master/js/game.js
-          var tileSize = map.tileWidth;
-          var toX = Math.floor(x/tileSize);
-          var toY = Math.floor(y/tileSize);
-          var fromX = Math.floor(this.x/tileSize);
-          var fromY = Math.floor(this.y/tileSize);
-          var entity = this;
-          this.scene.finder.findPath(fromX, fromY, toX, toY, function( path ) {
-            if (path === null) {
-              console.warn("Path was not found.");
-            } else {
-              entity.followPath(path);
-            }
-          });
-          this.scene.finder.calculate();
-        }
-
-        enemy.followPath = function(path){
-          console.log(path);
-          var tweens = [];
-          for(var i = 0; i < path.length-1; i++){
-            var ex = path[i+1].x;
-            var ey = path[i+1].y;
-            tweens.push({
-              targets: this,
-              x: {value: ex*map.tileWidth, duration: 200},
-              y: {value: ey*map.tileHeight, duration: 200}
-            });
-          }
-
-          this.scene.tweens.timeline({
-            tweens: tweens
-          });
-        }
+        
+        enemy = Enemy(enemy);
 
         this.camera = this.cameras.main;
 
@@ -113,7 +78,7 @@ var GameScene = new Phaser.Class({
 
         
         //   //Enable keyboard movement
-          cursors = this.input.keyboard.createCursorKeys();
+        cursors = this.input.keyboard.createCursorKeys();
         //   scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
         bombs = this.physics.add.group();
