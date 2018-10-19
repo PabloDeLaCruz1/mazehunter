@@ -198,9 +198,7 @@ function createPathFinder(map){
     if (properties[i] && !properties[i].collides) walkable.push(i+1);
   }
   finder.setAcceptableTiles(walkable);
-
-  globalTiles = tileset;
-  globalFinder = finder;
+  
   return finder;
 }
 
