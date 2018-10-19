@@ -37,6 +37,9 @@ var GameScene = new Phaser.Class({
 
         // add an enemy
         var enemy = this.physics.add.sprite(36, 500, 'dude');
+        // var enemy = new Enemy(this, 36, 500, 'dude');
+        console.log(this.physics.add);
+        // console.log(enemy); 
         enemy.setTint(0xff0000);
         enemy.setOrigin(0,0.5);
         enemy.goTo = function(x, y){
@@ -198,10 +201,11 @@ function createPathFinder(map){
     if (properties[i] && !properties[i].collides) walkable.push(i+1);
   }
   finder.setAcceptableTiles(walkable);
-  
+
   return finder;
 }
 
 function collidePlayerEnemy(player, enemy){
+  // respawn player logic goes here
   player.setTint(0xff0000);
 }
