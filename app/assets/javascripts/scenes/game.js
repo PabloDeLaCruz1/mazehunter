@@ -11,7 +11,6 @@ let GameScene = new Phaser.Class({
         },
     preload: function () {
 
-
     },
     create: function () {
 
@@ -25,28 +24,41 @@ let GameScene = new Phaser.Class({
         // Phaser's cache (i.e. the name you used in preload)
 
         const map = this.make.tilemap({
-            key: "map",
-            tileWidth: 36,
-            tileHeight: 36
+            key: "map"
+            // tileWidth: 32,
+            // tileHeight: 32
         });
 
+        const magecityTileSet = map.addTilesetImage( "magecity", "magecity");
+        const wallTileSet = map.addTilesetImage( "walls", "walls");
+        const treesTileSet = map.addTilesetImage( "trees_plants", "trees");
+        const dungeonTileSet = map.addTilesetImage( "ProjectUtumno_full", "dungeon");
+        
+        const bottomLayer = map.createDynamicLayer("bottomLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
+        const mediumLayer = map.createDynamicLayer("mediumLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
+        const topLayer = map.createDynamicLayer("topLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
+        const treeLayer = map.createDynamicLayer("treeLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
 
-        const tileset = map.addTilesetImage("Maze1Tiles", "tiles");
-        const mainLayer = map.createStaticLayer("Tile Layer 1", tileset, 0, 0);
+        // const magecityLayer = map.createStaticLayer("magecityLayer", magecityTileSet, 0, 0);
+        // const wallLayer = map.createStaticLayer("wallLayer", wallTileSet, 0, 0);
+        // const treesLayer = map.createStaticLayer("treesLayer", treesTileSet, 0, 0);
+        // const dungeonLayer = map.createStaticLayer("dungeonLayer", dungeonTileSet, 0, 0);
 
-        this.finder = createPathFinder(map);
+        // const tileset = map.addTilesetImage("Maze1Tiles", "tiles");
+        // const mainLayer = map.createStaticLayer("Tile Layer 1", tileset, 0, 0);
+
+        // this.finder = createPathFinder(map);
 
         // this.lights.enable().setAmbientColor(0x000000);
         // light = this.lights.addLight(180, 80, 300).setColor(0xffffff).setIntensity(2).setScrollFactor(0.0);
         // mainLayer.setPipeline('Light2D');
 
-        mainLayer.setCollisionByProperty({
-            collides: true
+        topLayer.setCollisionByProperty({
+          Collides: true
         });
 
         // add an enemy
-        var enemy = this.physics.add.sprite(36, 500, 'dude');
-        enemy.setTint(0xff0000);
+        var enemy = this.physics.add.sprite(36, 500, 'zombi');
         enemy.setOrigin(0,0.5);
         enemy.goTo = function(x, y){
           // code mostly taken from https://github.com/Jerenaux/pathfinding_tutorial/blob/master/js/game.js
@@ -92,15 +104,10 @@ let GameScene = new Phaser.Class({
           enemy.goTo(x,y);
         });
 
-        //     //Load Player
-        player = this.physics.add.sprite(50, 600, 'dude');
+        //     //Load Players
+        player = this.physics.add.sprite(50, 600, 'zombi');
         items.sword = this.add.image(50, 400, 'sword').setDisplaySize(32, 32);
         items.sword.name = "sword"
-        // this.physics.add.collider(player, items.sword);
-
-
-
-        this.physics.add.collider(player, mainLayer);
 
         player.setDepth(10)
         //   //Player animations
@@ -108,19 +115,31 @@ let GameScene = new Phaser.Class({
         anims.create({
 
           key: "left",
-          frames: anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+          frames: anims.generateFrameNumbers('zombi', { start: 3, end: 5 }),
           frameRate: 10,
           repeat: -1
         });
         anims.create({
           key: "idle",
-          frames: [{key: 'dude', frame: 4}],
+          frames: [{key: 'zombi', frame: 1}],
           frameRate: 10,
           repeat: -1
         });
         anims.create({
           key: "right",
-          frames: anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+          frames: anims.generateFrameNumbers('zombi', { start: 6, end: 8 }),
+          frameRate: 10,
+          repeat: -1
+        });
+        anims.create({
+          key: "up",
+          frames: anims.generateFrameNumbers('zombi', { start: 9, end: 11 }),
+          frameRate: 10,
+          repeat: -1
+        });
+        anims.create({
+          key: "down",
+          frames: anims.generateFrameNumbers('zombi', { start: 0, end: 2 }),
           frameRate: 10,
           repeat: -1
         });
@@ -131,11 +150,8 @@ let GameScene = new Phaser.Class({
         //   scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
         bombs = this.physics.add.group();
-
-        // this.physics.add.collider(bombs, platforms);
-
-        this.physics.add.collider(player, bombs, hitBomb, null, this);
-          //TODO refactor to use player and item class from ./objects
+        //TODO refactor to use player and item class from ./objects
+        this.physics.add.collider(player, topLayer);
         this.physics.add.collider(player, items.sword, collectItem, null, this)
 
         
@@ -147,8 +163,8 @@ let GameScene = new Phaser.Class({
 
         // }, 2000)
         // physics collisions
-        this.physics.add.collider(player, mainLayer);
-        this.physics.add.collider(enemy, mainLayer);
+        // 
+        
         this.physics.add.overlap(player, enemy, collidePlayerEnemy);
     },
 
@@ -166,7 +182,6 @@ let GameScene = new Phaser.Class({
         // Horizontal movement
         if (cursors.left.isDown) {
             player.body.setVelocityX(-100);
-            globalAnim = player.anims;
             player.anims.play('left', true);
         } else if (cursors.right.isDown) {
             player.body.setVelocityX(100);
@@ -176,10 +191,10 @@ let GameScene = new Phaser.Class({
         // Vertical movement
         if (cursors.up.isDown) {
             player.body.setVelocityY(-100);
-            player.anims.play('right', true);
+            player.anims.play('up', true);
         } else if (cursors.down.isDown) {
             player.body.setVelocityY(100);
-            player.anims.play('right', true);
+            player.anims.play('down', true);
         }
 
         // Normalize and scale the velocity so that player can't move faster along a diagonal
@@ -231,5 +246,6 @@ function createPathFinder(map){
 }
 
 function collidePlayerEnemy(player, enemy){
-  player.setTint(0xff0000);
+  player.x = 80;
+  player.y = 700;
 }
