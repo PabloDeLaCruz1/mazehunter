@@ -11,6 +11,7 @@ let GameScene = new Phaser.Class({
         },
     preload: function () {
 
+
     },
     create: function () {
 
@@ -46,6 +47,12 @@ let GameScene = new Phaser.Class({
 
         // const tileset = map.addTilesetImage("Maze1Tiles", "tiles");
         // const mainLayer = map.createStaticLayer("Tile Layer 1", tileset, 0, 0);
+
+        // const tileset = map.addTilesetImage("Maze1Tiles", "tiles");
+        // const mainLayer = map.createStaticLayer("Tile Layer 1", tileset, 0, 0);
+        diamond1 = this.physics.add.sprite(55, 400, 'diamond');
+        diamond1.setInteractive();
+
 
         // this.finder = createPathFinder(map);
 
@@ -109,6 +116,7 @@ let GameScene = new Phaser.Class({
         items.sword = this.add.image(50, 400, 'sword').setDisplaySize(32, 32);
         items.sword.name = "sword"
 
+
         player.setDepth(10)
         //   //Player animations
         const anims = this.anims;
@@ -169,6 +177,11 @@ let GameScene = new Phaser.Class({
     },
 
     update: function (time, delta) {
+        if (gameOver)
+        {
+          return;
+        }
+
         // Stop any previous movement from the last frame
         // cursors = this.input.keyboard.createCursorKeys();
         let speed = 175;
@@ -203,13 +216,16 @@ let GameScene = new Phaser.Class({
         //Spotlight
 
 
-        // light.x = player.x;
-        // light.y = player.y;
-    
-        
-
-    },
+    }
 });
+
+function collisionHandler(player, object){
+    console.log(this)
+    this.scene.start('MenuScene');
+    this.physics.pause();
+    gameOver = true;
+}
+
 
 function createPathFinder(map){
   // takes a map object and creates an EasyStar path finder from it
@@ -249,3 +265,4 @@ function collidePlayerEnemy(player, enemy){
   player.x = 80;
   player.y = 700;
 }
+
