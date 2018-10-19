@@ -1,4 +1,4 @@
-var GameScene = new Phaser.Class({
+let GameScene = new Phaser.Class({
 
     Extends: Phaser.Scene,
 
@@ -14,6 +14,7 @@ var GameScene = new Phaser.Class({
 
     },
     create: function () {
+
         // create your world here
         this.lights.enable().setAmbientColor(0x111111);
         light = this.lights.addLight(0, 0, 400).setColor(0xffffff).setIntensity(2);
@@ -27,7 +28,7 @@ var GameScene = new Phaser.Class({
             tileWidth: 36,
             tileHeight: 36
         });
-        
+
 
         const tileset = map.addTilesetImage("Maze1Tiles", "tiles");
         const mainLayer = map.createStaticLayer("Tile Layer 1", tileset, 0, 0);
@@ -42,14 +43,20 @@ var GameScene = new Phaser.Class({
 
         //     //Load Player
         player = this.physics.add.sprite(50, 600, 'dude');
+        items.sword = this.add.image(50, 400, 'sword').setDisplaySize(32, 32);
+        items.sword.name = "sword"
+        // this.physics.add.collider(player, items.sword);
+
+
+
         this.physics.add.collider(player, mainLayer);
         player.setDepth(10)
         //   //Player animations
         const anims = this.anims;
         anims.create({
-            key: "misa-left-walk",
+            key: "left-walk",
             frames: anims.generateFrameNames("atlas", {
-                prefix: "misa-left-walk.",
+                prefix: "left-walk.",
                 start: 0,
                 end: 3,
                 zeroPad: 3
@@ -58,9 +65,9 @@ var GameScene = new Phaser.Class({
             repeat: -1
         });
         anims.create({
-            key: "misa-right-walk",
+            key: "right-walk",
             frames: anims.generateFrameNames("atlas", {
-                prefix: "misa-right-walk.",
+                prefix: "right-walk.",
                 start: 0,
                 end: 3,
                 zeroPad: 3
@@ -69,9 +76,9 @@ var GameScene = new Phaser.Class({
             repeat: -1
         });
         anims.create({
-            key: "misa-front-walk",
+            key: "front-walk",
             frames: anims.generateFrameNames("atlas", {
-                prefix: "misa-front-walk.",
+                prefix: "front-walk.",
                 start: 0,
                 end: 3,
                 zeroPad: 3
@@ -80,9 +87,9 @@ var GameScene = new Phaser.Class({
             repeat: -1
         });
         anims.create({
-            key: "misa-back-walk",
+            key: "back-walk",
             frames: anims.generateFrameNames("atlas", {
-                prefix: "misa-back-walk.",
+                prefix: "back-walk.",
                 start: 0,
                 end: 3,
                 zeroPad: 3
@@ -100,7 +107,17 @@ var GameScene = new Phaser.Class({
         // this.physics.add.collider(bombs, platforms);
 
         this.physics.add.collider(player, bombs, hitBomb, null, this);
+        //TODO refactor to use player and item class from ./objects
+        this.physics.add.collider(player, items.sword, collectItem, null, this)
 
+        
+        // setTimeout(() => {
+        //     collectItem(player, items.sword)
+        // }, 1000)
+        // setTimeout(() => {
+        //     console.log(player.inventory);
+
+        // }, 2000)
     },
 
     update: function (time, delta) {

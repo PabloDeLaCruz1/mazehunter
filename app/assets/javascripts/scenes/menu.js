@@ -1,4 +1,4 @@
-var MenuScene = new Phaser.Class({
+let MenuScene = new Phaser.Class({
 
   Extends: Phaser.Scene,
 
@@ -57,9 +57,9 @@ var MenuScene = new Phaser.Class({
     })
 
 
-    var startButtonText = this.add.dynamicBitmapText(550, 480, 'desyrel', 'START!', 32);
-    var multiplayerButtonText = this.add.dynamicBitmapText(490, 580, 'desyrel', 'MULTIPLAYER', 32);
-    var settingsText = this.add.dynamicBitmapText(525, 680, 'desyrel', 'SETTINGS', 32);
+    let startButtonText = this.add.dynamicBitmapText(550, 480, 'desyrel', 'START!', 32);
+    let multiplayerButtonText = this.add.dynamicBitmapText(490, 580, 'desyrel', 'MULTIPLAYER', 32);
+    let settingsText = this.add.dynamicBitmapText(525, 680, 'desyrel', 'SETTINGS', 32);
 
     startButtonText.setDisplayCallback(textCallback);
     multiplayerButtonText.setDisplayCallback(textCallback);
@@ -76,12 +76,12 @@ var MenuScene = new Phaser.Class({
     //   yoyo: true
     // });
 
-    whiteSmoke = this.add.particles('white-smoke').createEmitter({
+    let whiteSmoke = this.add.particles('white-smoke').createEmitter({
       x: 400,
       y: 300,
       speed: {
-        min: 20,
-        max: 100
+        min: 10,
+        max: 200
       },
       angle: {
         min: 0,
@@ -100,12 +100,12 @@ var MenuScene = new Phaser.Class({
     });
     whiteSmoke.reserve(1000);
 
-    darkSmoke = this.add.particles('dark-smoke').createEmitter({
+    let darkSmoke = this.add.particles('dark-smoke').createEmitter({
       x: 400,
       y: 300,
       speed: {
-        min: 20,
-        max: 100
+        min: 10,
+        max: 200
       },
       angle: {
         min: 0,
@@ -117,20 +117,19 @@ var MenuScene = new Phaser.Class({
       },
       alpha: {
         start: 0,
-        end: 0.1
+        end: 0.3
       },
       blendMode: 'SCREEN',
       lifespan: 2000,
       //active: false
 
     });
+
     darkSmoke.reserve(1000);
-    darkSmoke.setPosition(700, 750);
-    whiteSmoke.setPosition(800, 750);
-    darkSmoke.setPosition(100, 750);
-    whiteSmoke.setPosition(750, 750);
-    darkSmoke.setPosition(200, 750);
-    whiteSmoke.setPosition(600, 750);
+    darkSmoke.setPosition(150, 790);
+
+    whiteSmoke.setPosition(1000, 790);
+
 
 
   },

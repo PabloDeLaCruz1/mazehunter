@@ -8,6 +8,16 @@ let hitBomb = function (player, bomb) {
     gameOver = true;
 }
 
+let collectItem = function (player, item) {
+
+    console.log(player);
+    
+    console.log(`${item.name} added to inventory`);
+
+    
+    item.destroy();
+}
+
 //Will use this to generate "trust" effects or "dust" when player run/sprint/walk etc.
 //http://labs.phaser.io/view.html?src=src\games\defenda\test.js
 function createThrustEmitter ()
@@ -46,7 +56,14 @@ let config = {
     },
     scene: [PreLoadScene, MenuScene, GameScene],
 };
-let player;
+let player = {
+    type: "",
+    inventory: []
+};
+
+let items = {
+
+}
 let player2;
 let cursors;
 let score = 0;
