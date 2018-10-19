@@ -10,12 +10,12 @@ var GameScene = new Phaser.Class({
             });
         },
     preload: function () {
-
+        this.load.image('diamond', 'assets/diamond.png');
     },
     create: function () {
         // create your world here
         this.lights.enable().setAmbientColor(0x000000);
-        light = this.lights.addLight(180, 80, 300).setColor(0xffffff).setIntensity(2).setScrollFactor(0.0);
+        light = this.lights.addLight(100, 100, 1000).setColor(0xffffff).setIntensity(2).setScrollFactor(0.0);
 
 
         // var robot = this.add.image(-100, 0, 'robot').setOrigin(0).setScale(0.7);
@@ -33,6 +33,9 @@ var GameScene = new Phaser.Class({
 
         const tileset = map.addTilesetImage("Maze1Tiles", "tiles");
         const mainLayer = map.createStaticLayer("Tile Layer 1", tileset, 0, 0);
+        diamond1 = this.physics.add.sprite(55, 400, 'diamond');
+        diamond1.setInteractive();
+
 
 
         mainLayer.setPipeline('Light2D');
@@ -45,53 +48,9 @@ var GameScene = new Phaser.Class({
         //     //Load Player
         player = this.physics.add.sprite(50, 600, 'dude');
         this.physics.add.collider(player, mainLayer);
+        this.physics.add.collider(player, mainLayer);
+        this.physics.add.overlap(player, diamond1, collisionHandler, null, this);
         player.setDepth(10)
-        //   //Player animations
-        const anims = this.anims;
-        anims.create({
-            key: "misa-left-walk",
-            frames: anims.generateFrameNames("atlas", {
-                prefix: "misa-left-walk.",
-                start: 0,
-                end: 3,
-                zeroPad: 3
-            }),
-            frameRate: 10,
-            repeat: -1
-        });
-        anims.create({
-            key: "misa-right-walk",
-            frames: anims.generateFrameNames("atlas", {
-                prefix: "misa-right-walk.",
-                start: 0,
-                end: 3,
-                zeroPad: 3
-            }),
-            frameRate: 10,
-            repeat: -1
-        });
-        anims.create({
-            key: "misa-front-walk",
-            frames: anims.generateFrameNames("atlas", {
-                prefix: "misa-front-walk.",
-                start: 0,
-                end: 3,
-                zeroPad: 3
-            }),
-            frameRate: 10,
-            repeat: -1
-        });
-        anims.create({
-            key: "misa-back-walk",
-            frames: anims.generateFrameNames("atlas", {
-                prefix: "misa-back-walk.",
-                start: 0,
-                end: 3,
-                zeroPad: 3
-            }),
-            frameRate: 10,
-            repeat: -1
-        });
 
         //   //Enable keyboard movement
         //   cursors = this.input.keyboard.createCursorKeys();
@@ -106,6 +65,11 @@ var GameScene = new Phaser.Class({
     },
 
     update: function (time, delta) {
+        if (gameOver)
+        {
+          return;
+        }
+
         // Stop any previous movement from the last frame
         cursors = this.input.keyboard.createCursorKeys();
         let speed = 175;
@@ -130,13 +94,17 @@ var GameScene = new Phaser.Class({
         // Normalize and scale the velocity so that player can't move faster along a diagonal
         player.body.velocity.normalize().scale(speed);
 
-
         //Spotlight
 
             light.x = player.x;
             light.y = player.y;
-    
-        
-
     }
 });
+
+    function collisionHandler(player, object)
+    {
+        console.log(this)
+        this.scene.start('MenuScene');
+        this.physics.pause();
+        gameOver = true;
+    }
