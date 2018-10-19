@@ -1,4 +1,4 @@
-var GameScene = new Phaser.Class({
+let GameScene = new Phaser.Class({
 
     Extends: Phaser.Scene,
 
@@ -11,8 +11,16 @@ var GameScene = new Phaser.Class({
         },
     preload: function () {
 
+
     },
     create: function () {
+
+        // create your world here
+        this.lights.enable().setAmbientColor(0x111111);
+        light = this.lights.addLight(0, 0, 400).setColor(0xffffff).setIntensity(2);
+        //.setScrollFactor(0.0);
+
+
         // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
         // Phaser's cache (i.e. the name you used in preload)
 
@@ -21,6 +29,7 @@ var GameScene = new Phaser.Class({
             tileWidth: 36,
             tileHeight: 36
         });
+
 
         const tileset = map.addTilesetImage("Maze1Tiles", "tiles");
         const mainLayer = map.createStaticLayer("Tile Layer 1", tileset, 0, 0);
@@ -85,11 +94,19 @@ var GameScene = new Phaser.Class({
 
         //     //Load Player
         player = this.physics.add.sprite(50, 600, 'dude');
-        
+        items.sword = this.add.image(50, 400, 'sword').setDisplaySize(32, 32);
+        items.sword.name = "sword"
+        // this.physics.add.collider(player, items.sword);
+
+
+
+        this.physics.add.collider(player, mainLayer);
+
         player.setDepth(10)
         //   //Player animations
         const anims = this.anims;
         anims.create({
+
           key: "left",
           frames: anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
           frameRate: 10,
@@ -118,6 +135,17 @@ var GameScene = new Phaser.Class({
         // this.physics.add.collider(bombs, platforms);
 
         this.physics.add.collider(player, bombs, hitBomb, null, this);
+          //TODO refactor to use player and item class from ./objects
+        this.physics.add.collider(player, items.sword, collectItem, null, this)
+
+        
+        // setTimeout(() => {
+        //     collectItem(player, items.sword)
+        // }, 1000)
+        // setTimeout(() => {
+        //     console.log(player.inventory);
+
+        // }, 2000)
         // physics collisions
         this.physics.add.collider(player, mainLayer);
         this.physics.add.collider(enemy, mainLayer);
@@ -157,8 +185,8 @@ var GameScene = new Phaser.Class({
         // Normalize and scale the velocity so that player can't move faster along a diagonal
         player.body.velocity.normalize().scale(speed);
 
-
         //Spotlight
+
 
         // light.x = player.x;
         // light.y = player.y;
