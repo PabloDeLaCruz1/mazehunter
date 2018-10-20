@@ -10,7 +10,7 @@ let GameScene = new Phaser.Class({
             });
         },
     preload: function () {
-      
+
     },
     create: function () {
 
@@ -30,11 +30,11 @@ let GameScene = new Phaser.Class({
         });
         this.map = map;
 
-        const magecityTileSet = map.addTilesetImage( "magecity", "magecity");
-        const wallTileSet = map.addTilesetImage( "walls", "walls");
-        const treesTileSet = map.addTilesetImage( "trees_plants", "trees");
-        const dungeonTileSet = map.addTilesetImage( "ProjectUtumno_full", "dungeon");
-        
+        const magecityTileSet = map.addTilesetImage("magecity", "magecity");
+        const wallTileSet = map.addTilesetImage("walls", "walls");
+        const treesTileSet = map.addTilesetImage("trees_plants", "trees");
+        const dungeonTileSet = map.addTilesetImage("ProjectUtumno_full", "dungeon");
+
         const bottomLayer = map.createDynamicLayer("bottomLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
         const mediumLayer = map.createDynamicLayer("mediumLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
         const topLayer = map.createDynamicLayer("topLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
@@ -62,7 +62,7 @@ let GameScene = new Phaser.Class({
         // mainLayer.setPipeline('Light2D');
 
         topLayer.setCollisionByProperty({
-          Collides: true
+            Collides: true
         });
 
 
@@ -74,10 +74,10 @@ let GameScene = new Phaser.Class({
         // shortcut for alignWithMap
         var m = alignWithMap.bind(this.map);
         // shortcut for this.physics.add.sprite
-        this.physicsAdd = function(x, y, spriteKey){
-          console.log();
-          let aligned = m(x, y);
-          return this.physics.add.sprite(aligned.x, aligned.y, spriteKey);
+        this.physicsAdd = function (x, y, spriteKey) {
+            console.log();
+            let aligned = m(x, y);
+            return this.physics.add.sprite(aligned.x, aligned.y, spriteKey);
         }
 
         // add some enemies
@@ -91,11 +91,11 @@ let GameScene = new Phaser.Class({
 
         this.camera = this.cameras.main;
 
-        this.input.on('pointerup', function(pointer){
-          var x = this.scene.camera.scrollX + pointer.x;
-          var y = this.scene.camera.scrollY + pointer.y;
-          console.log(x,y);
-          enemy.patrol();
+        this.input.on('pointerup', function (pointer) {
+            var x = this.scene.camera.scrollX + pointer.x;
+            var y = this.scene.camera.scrollY + pointer.y;
+            console.log(x, y);
+            enemy.patrol();
         });
 
         //     //Load Player
@@ -108,13 +108,13 @@ let GameScene = new Phaser.Class({
         items.sword.name = "sword"
 
         console.log(player.body._bounds.width);
-        
+
         items.sword = this.physics.add.sprite(50, 400, 'sword').setDisplaySize(32, 32);
 
         items.sword.name = "sword"
         // this.physics.add.collider(player, items.sword);
 
-        this.physics.add.collider(player, mainLayer);
+        // this.physics.add.collider(player, mainLayer);
 
 
         player.setDepth(10)
@@ -166,34 +166,49 @@ let GameScene = new Phaser.Class({
         //     repeat: -1
 
         anims.create({
-          key: "left",
-          frames: anims.generateFrameNumbers('zombi', { start: 3, end: 5 }),
-          frameRate: 10,
-          repeat: -1
+            key: "left",
+            frames: anims.generateFrameNumbers('zombi', {
+                start: 3,
+                end: 5
+            }),
+            frameRate: 10,
+            repeat: -1
         });
         anims.create({
-          key: "idle",
-          frames: [{key: 'zombi', frame: 1}],
-          frameRate: 10,
-          repeat: -1
+            key: "idle",
+            frames: [{
+                key: 'zombi',
+                frame: 1
+            }],
+            frameRate: 10,
+            repeat: -1
         });
         anims.create({
-          key: "right",
-          frames: anims.generateFrameNumbers('zombi', { start: 6, end: 8 }),
-          frameRate: 10,
-          repeat: -1
+            key: "right",
+            frames: anims.generateFrameNumbers('zombi', {
+                start: 6,
+                end: 8
+            }),
+            frameRate: 10,
+            repeat: -1
         });
         anims.create({
-          key: "up",
-          frames: anims.generateFrameNumbers('zombi', { start: 9, end: 11 }),
-          frameRate: 10,
-          repeat: -1
+            key: "up",
+            frames: anims.generateFrameNumbers('zombi', {
+                start: 9,
+                end: 11
+            }),
+            frameRate: 10,
+            repeat: -1
         });
         anims.create({
-          key: "down",
-          frames: anims.generateFrameNumbers('zombi', { start: 0, end: 2 }),
-          frameRate: 10,
-          repeat: -1
+            key: "down",
+            frames: anims.generateFrameNumbers('zombi', {
+                start: 0,
+                end: 2
+            }),
+            frameRate: 10,
+            repeat: -1
         });
 
         //   //Enable keyboard movement
@@ -222,9 +237,8 @@ let GameScene = new Phaser.Class({
     },
 
     update: function (time, delta) {
-        if (gameOver)
-        {
-          return;
+        if (gameOver) {
+            return;
         }
 
         // Stop any previous movement from the last frame
@@ -264,35 +278,37 @@ let GameScene = new Phaser.Class({
     }
 });
 
-function toTileCoordinates(x, y, size){
-  // if calling this function without binding "this" to a TileMap object,
-  // you must explicitly pass in the tile size
-  size = size || this.tileWidth;
-  return {
-    x: Math.floor(x/size),
-    y: Math.floor(y/size)
-  }
-}
-function toWorldCoordinates(x, y, size){
-  // if calling this function without binding "this" to a TileMap object,
-  // you must explicitly pass in the tile size
-  size = size || this.tileWidth;
-  return {
-    x: x * size,
-    y: y * size
-  }
-}
-function alignWithMap(x, y, size){
-  // takes world coordinates and returns an object containing 
-  // coordinates aligned to the map tiles
-  // like the other converter functions, you must either bind "this"
-  // to a TileMap object, or pass the tile size explicitly
-  size = size || this.tileWidth;
-  var tileCoords = toTileCoordinates(x,y,size);
-  return toWorldCoordinates(tileCoords.x, tileCoords.y, size);
+function toTileCoordinates(x, y, size) {
+    // if calling this function without binding "this" to a TileMap object,
+    // you must explicitly pass in the tile size
+    size = size || this.tileWidth;
+    return {
+        x: Math.floor(x / size),
+        y: Math.floor(y / size)
+    }
 }
 
-function collisionHandler(player, object){
+function toWorldCoordinates(x, y, size) {
+    // if calling this function without binding "this" to a TileMap object,
+    // you must explicitly pass in the tile size
+    size = size || this.tileWidth;
+    return {
+        x: x * size,
+        y: y * size
+    }
+}
+
+function alignWithMap(x, y, size) {
+    // takes world coordinates and returns an object containing 
+    // coordinates aligned to the map tiles
+    // like the other converter functions, you must either bind "this"
+    // to a TileMap object, or pass the tile size explicitly
+    size = size || this.tileWidth;
+    var tileCoords = toTileCoordinates(x, y, size);
+    return toWorldCoordinates(tileCoords.x, tileCoords.y, size);
+}
+
+function collisionHandler(player, object) {
     console.log(this)
     this.scene.start('MenuScene');
     this.physics.pause();
@@ -300,48 +316,46 @@ function collisionHandler(player, object){
 }
 
 
-function createPathFinder(map){
-  // takes a map object and creates an EasyStar path finder from it
-  // Most of this code is taken from: http://www.dynetisgames.com/2018/03/06/pathfinding-easystar-phaser-3/
-  // instantiate a new pathfinder object
-  var finder = new EasyStar.js();
+function createPathFinder(map) {
+    // takes a map object and creates an EasyStar path finder from it
+    // Most of this code is taken from: http://www.dynetisgames.com/2018/03/06/pathfinding-easystar-phaser-3/
+    // instantiate a new pathfinder object
+    var finder = new EasyStar.js();
 
-  // first we have to create a 2D grid out of the tile IDs in our map
-  var grid = [];
-  for(var y = 0; y < map.height; y++){
-    var col = [];
-    for(var x = 0; x < map.width; x++){
-      // In each cell we store the ID of the tile, which corresponds
-      // to its index in the tileset of the map ("ID" field in Tiled)
-      col.push(map.getTileAt(x,y).index);
+    // first we have to create a 2D grid out of the tile IDs in our map
+    var grid = [];
+    for (var y = 0; y < map.height; y++) {
+        var col = [];
+        for (var x = 0; x < map.width; x++) {
+            // In each cell we store the ID of the tile, which corresponds
+            // to its index in the tileset of the map ("ID" field in Tiled)
+            col.push(map.getTileAt(x, y).index);
+        }
+
+        grid.push(col);
     }
+    finder.setGrid(grid);
 
-    grid.push(col);
-  }
-  finder.setGrid(grid);
-
-  // now create a list of walkable tiles by only choosing the ones without the "collides" property
-  var walkable = [];
-  // get the tileset, and its property list
-  var tileset = map.tilesets[0];
-  var properties = tileset.tileProperties;
-  // loop through properties, and add those tiles which have "collides: false" to the walkable list
-  for (let i = tileset.firstgid-1; i < tileset.total-1; i++){
-    // if collides is false, add the tile to walkable
-    if (properties[i] && !properties[i].collides) walkable.push(i+1);
-  }
-  finder.setAcceptableTiles(walkable);
-
-  return finder;
-}
+    // now create a list of walkable tiles by only choosing the ones without the "collides" property
+    var walkable = [];
+    // get the tileset, and its property list
+    var tileset = map.tilesets[0];
+    var properties = tileset.tileProperties;
+    // loop through properties, and add those tiles which have "collides: false" to the walkable list
+    for (let i = tileset.firstgid - 1; i < tileset.total - 1; i++) {
+        // if collides is false, add the tile to walkable
+        if (properties[i] && !properties[i].collides) walkable.push(i + 1);
+    }
+    finder.setAcceptableTiles(walkable);
 
     return finder;
 }
-}
-function collidePlayerEnemy(player, enemy){
-  player.x = 80;
-  player.y = 700;
-  player.setTint(0xff0000);
+
+
+
+function collidePlayerEnemy(player, enemy) {
+    player.x = 80;
+    player.y = 700;
+    player.setTint(0xff0000);
 
 }
-
