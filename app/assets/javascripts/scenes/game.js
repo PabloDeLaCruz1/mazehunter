@@ -10,8 +10,7 @@ let GameScene = new Phaser.Class({
             });
         },
     preload: function () {
-
-
+      
     },
     create: function () {
 
@@ -29,6 +28,7 @@ let GameScene = new Phaser.Class({
             // tileWidth: 32,
             // tileHeight: 32
         });
+        this.map = map;
 
         const magecityTileSet = map.addTilesetImage( "magecity", "magecity");
         const wallTileSet = map.addTilesetImage( "walls", "walls");
@@ -54,6 +54,7 @@ let GameScene = new Phaser.Class({
         diamond1.setInteractive();
 
 
+        // TODO: make pathfinder work with new map (ideally, with ANY map)
         // this.finder = createPathFinder(map);
 
         // this.lights.enable().setAmbientColor(0x000000);
@@ -64,58 +65,37 @@ let GameScene = new Phaser.Class({
           Collides: true
         });
 
-        // add an enemy
 
-        var enemy = this.physics.add.sprite(36, 500, 'zombi');
-        enemy.setOrigin(0,0.5);
-        enemy.goTo = function(x, y){
-          // code mostly taken from https://github.com/Jerenaux/pathfinding_tutorial/blob/master/js/game.js
-          var tileSize = map.tileWidth;
-          var toX = Math.floor(x/tileSize);
-          var toY = Math.floor(y/tileSize);
-          var fromX = Math.floor(this.x/tileSize);
-          var fromY = Math.floor(this.y/tileSize);
-          var entity = this;
-          this.scene.finder.findPath(fromX, fromY, toX, toY, function( path ) {
-            if (path === null) {
-              console.warn("Path was not found.");
-            } else {
-              entity.followPath(path);
-            }
-          });
-          this.scene.finder.calculate();
+        // SHORTCUT FUNCTIONS
+        // create a shortcut of the toTileCoordinates function, bound to the map in this scene
+        var t = toTileCoordinates.bind(this.map);
+        // shortcut for toWorldCoordinates, similar to above
+        var w = toWorldCoordinates.bind(this.map);
+        // shortcut for alignWithMap
+        var m = alignWithMap.bind(this.map);
+        // shortcut for this.physics.add.sprite
+        this.physicsAdd = function(x, y, spriteKey){
+          console.log();
+          let aligned = m(x, y);
+          return this.physics.add.sprite(aligned.x, aligned.y, spriteKey);
         }
 
-        enemy.followPath = function (path) {
-            //   console.log(path);
-            var tweens = [];
-            for (var i = 0; i < path.length - 1; i++) {
-                var ex = path[i + 1].x;
-                var ey = path[i + 1].y;
-                tweens.push({
-                    targets: this,
-                    x: {
-                        value: ex * map.tileWidth,
-                        duration: 200
-                    },
-                    y: {
-                        value: ey * map.tileHeight,
-                        duration: 200
-                    }
-                });
-            }
+        // add some enemies
+        var enemy1 = Enemy(this.physicsAdd(36, 500, 'zombi'));
+        var enemy2 = Enemy(this.physicsAdd(266, 490, 'zombi'));
 
-            this.scene.tweens.timeline({
-                tweens: tweens
-            });
-        }
+        // set the patrol path that the enemies will follow
+        // below lines commented out until pathfinder is working with new map
+        // enemy1.createPatrol(t(273,236));
+        // enemy2.createPatrol(t(410,230));
 
         this.camera = this.cameras.main;
 
-        this.input.on('pointerup', function (pointer) {
-            var x = this.scene.camera.scrollX + pointer.x;
-            var y = this.scene.camera.scrollY + pointer.y;
-            enemy.goTo(x, y);
+        this.input.on('pointerup', function(pointer){
+          var x = this.scene.camera.scrollX + pointer.x;
+          var y = this.scene.camera.scrollY + pointer.y;
+          console.log(x,y);
+          enemy.patrol();
         });
 
         //     //Load Player
@@ -233,10 +213,11 @@ let GameScene = new Phaser.Class({
 
         // }, 2000)
         // physics collisions
-        // 
-        
-        this.physics.add.overlap(player, enemy, collidePlayerEnemy);
+
         this.physics.add.collider(player, items.sword, collectItem)
+        this.physics.add.collider(player, topLayer);
+        this.physics.add.overlap(player, enemy1, collidePlayerEnemy);
+        this.physics.add.overlap(player, enemy2, collidePlayerEnemy);
 
     },
 
@@ -283,6 +264,34 @@ let GameScene = new Phaser.Class({
     }
 });
 
+function toTileCoordinates(x, y, size){
+  // if calling this function without binding "this" to a TileMap object,
+  // you must explicitly pass in the tile size
+  size = size || this.tileWidth;
+  return {
+    x: Math.floor(x/size),
+    y: Math.floor(y/size)
+  }
+}
+function toWorldCoordinates(x, y, size){
+  // if calling this function without binding "this" to a TileMap object,
+  // you must explicitly pass in the tile size
+  size = size || this.tileWidth;
+  return {
+    x: x * size,
+    y: y * size
+  }
+}
+function alignWithMap(x, y, size){
+  // takes world coordinates and returns an object containing 
+  // coordinates aligned to the map tiles
+  // like the other converter functions, you must either bind "this"
+  // to a TileMap object, or pass the tile size explicitly
+  size = size || this.tileWidth;
+  var tileCoords = toTileCoordinates(x,y,size);
+  return toWorldCoordinates(tileCoords.x, tileCoords.y, size);
+}
+
 function collisionHandler(player, object){
     console.log(this)
     this.scene.start('MenuScene');
@@ -306,7 +315,25 @@ function createPathFinder(map){
       // to its index in the tileset of the map ("ID" field in Tiled)
       col.push(map.getTileAt(x,y).index);
     }
-    finder.setAcceptableTiles(walkable);
+
+    grid.push(col);
+  }
+  finder.setGrid(grid);
+
+  // now create a list of walkable tiles by only choosing the ones without the "collides" property
+  var walkable = [];
+  // get the tileset, and its property list
+  var tileset = map.tilesets[0];
+  var properties = tileset.tileProperties;
+  // loop through properties, and add those tiles which have "collides: false" to the walkable list
+  for (let i = tileset.firstgid-1; i < tileset.total-1; i++){
+    // if collides is false, add the tile to walkable
+    if (properties[i] && !properties[i].collides) walkable.push(i+1);
+  }
+  finder.setAcceptableTiles(walkable);
+
+  return finder;
+}
 
     return finder;
 }
