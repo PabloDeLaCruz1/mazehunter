@@ -45,60 +45,70 @@ let GameScene = new Phaser.Class({
         });
 
         // add an enemy
-        var enemy = this.physics.add.sprite(36, 500, 'dude');
+        var enemy = this.physics.add.sprite(200, 500, 'dude');
         enemy.setTint(0xff0000);
-        enemy.setOrigin(0,0.5);
-        enemy.goTo = function(x, y){
-          // code mostly taken from https://github.com/Jerenaux/pathfinding_tutorial/blob/master/js/game.js
-          var tileSize = map.tileWidth;
-          var toX = Math.floor(x/tileSize);
-          var toY = Math.floor(y/tileSize);
-          var fromX = Math.floor(this.x/tileSize);
-          var fromY = Math.floor(this.y/tileSize);
-          var entity = this;
-          this.scene.finder.findPath(fromX, fromY, toX, toY, function( path ) {
-            if (path === null) {
-              console.warn("Path was not found.");
-            } else {
-              entity.followPath(path);
-            }
-          });
-          this.scene.finder.calculate();
+        enemy.setOrigin(0, 0.5);
+        enemy.goTo = function (x, y) {
+            // code mostly taken from https://github.com/Jerenaux/pathfinding_tutorial/blob/master/js/game.js
+            var tileSize = map.tileWidth;
+            var toX = Math.floor(x / tileSize);
+            var toY = Math.floor(y / tileSize);
+            var fromX = Math.floor(this.x / tileSize);
+            var fromY = Math.floor(this.y / tileSize);
+            var entity = this;
+            this.scene.finder.findPath(fromX, fromY, toX, toY, function (path) {
+                if (path === null) {
+                    console.warn("Path was not found.");
+                } else {
+                    entity.followPath(path);
+                }
+            });
+            this.scene.finder.calculate();
         }
 
-        enemy.followPath = function(path){
-          console.log(path);
-          var tweens = [];
-          for(var i = 0; i < path.length-1; i++){
-            var ex = path[i+1].x;
-            var ey = path[i+1].y;
-            tweens.push({
-              targets: this,
-              x: {value: ex*map.tileWidth, duration: 200},
-              y: {value: ey*map.tileHeight, duration: 200}
-            });
-          }
+        enemy.followPath = function (path) {
+            //   console.log(path);
+            var tweens = [];
+            for (var i = 0; i < path.length - 1; i++) {
+                var ex = path[i + 1].x;
+                var ey = path[i + 1].y;
+                tweens.push({
+                    targets: this,
+                    x: {
+                        value: ex * map.tileWidth,
+                        duration: 200
+                    },
+                    y: {
+                        value: ey * map.tileHeight,
+                        duration: 200
+                    }
+                });
+            }
 
-          this.scene.tweens.timeline({
-            tweens: tweens
-          });
+            this.scene.tweens.timeline({
+                tweens: tweens
+            });
         }
 
         this.camera = this.cameras.main;
 
-        this.input.on('pointerup', function(pointer){
-          var x = this.scene.camera.scrollX + pointer.x;
-          var y = this.scene.camera.scrollY + pointer.y;
-          enemy.goTo(x,y);
+        this.input.on('pointerup', function (pointer) {
+            var x = this.scene.camera.scrollX + pointer.x;
+            var y = this.scene.camera.scrollY + pointer.y;
+            enemy.goTo(x, y);
         });
 
         //     //Load Player
-        player = this.physics.add.sprite(50, 600, 'dude');
-        items.sword = this.add.image(50, 400, 'sword').setDisplaySize(32, 32);
+        player = this.physics.add.sprite(50, 600, 'dude').setDisplaySize(50, 68);
+        player.body._bounds.height = 32;
+        player.body._bounds.width = 32;
+
+        console.log(player.body._bounds.width);
+        
+        items.sword = this.physics.add.sprite(50, 400, 'sword').setDisplaySize(32, 32);
+
         items.sword.name = "sword"
         // this.physics.add.collider(player, items.sword);
-
-
 
         this.physics.add.collider(player, mainLayer);
 
@@ -106,28 +116,53 @@ let GameScene = new Phaser.Class({
         //   //Player animations
         const anims = this.anims;
         anims.create({
-
-          key: "left",
-          frames: anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-          frameRate: 10,
-          repeat: -1
+            key: "idle",
+            frames: [{
+                key: 'dude',
+                frame: 0
+            }],
+            frameRate: 10,
+            repeat: -1
         });
         anims.create({
-          key: "idle",
-          frames: [{key: 'dude', frame: 4}],
-          frameRate: 10,
-          repeat: -1
+            key: "down",
+            frames: anims.generateFrameNumbers('dude', {
+                start: 0,
+                end: 11
+            }),
+            frameRate: 10,
+            repeat: -1
         });
         anims.create({
-          key: "right",
-          frames: anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-          frameRate: 10,
-          repeat: -1
+            key: "left",
+            frames: anims.generateFrameNumbers('dude', {
+                start: 12,
+                end: 23
+            }),
+            frameRate: 10,
+            repeat: -1
+        });
+        anims.create({
+            key: "right",
+            frames: anims.generateFrameNumbers('dude', {
+                start: 24,
+                end: 35
+            }),
+            frameRate: 10,
+            repeat: -1
+        });
+        anims.create({
+            key: "up",
+            frames: anims.generateFrameNumbers('dude', {
+                start: 36,
+                end: 47
+            }),
+            frameRate: 10,
+            repeat: -1
         });
 
-        
         //   //Enable keyboard movement
-          cursors = this.input.keyboard.createCursorKeys();
+        cursors = this.input.keyboard.createCursorKeys();
         //   scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
         bombs = this.physics.add.group();
@@ -135,10 +170,9 @@ let GameScene = new Phaser.Class({
         // this.physics.add.collider(bombs, platforms);
 
         this.physics.add.collider(player, bombs, hitBomb, null, this);
-          //TODO refactor to use player and item class from ./objects
-        this.physics.add.collider(player, items.sword, collectItem, null, this)
+        //TODO refactor to use player and item class from ./objects
 
-        
+
         // setTimeout(() => {
         //     collectItem(player, items.sword)
         // }, 1000)
@@ -150,6 +184,8 @@ let GameScene = new Phaser.Class({
         this.physics.add.collider(player, mainLayer);
         this.physics.add.collider(enemy, mainLayer);
         this.physics.add.overlap(player, enemy, collidePlayerEnemy);
+        this.physics.add.collider(player, items.sword, collectItem)
+
     },
 
     update: function (time, delta) {
@@ -158,8 +194,8 @@ let GameScene = new Phaser.Class({
         let speed = 175;
         let prevVelocity = player.body.velocity.clone();
 
-        if (prevVelocity.x == 0 && prevVelocity.y == 0){
-          player.anims.play('idle');
+        if (prevVelocity.x == 0 && prevVelocity.y == 0) {
+            player.anims.play('idle');
         }
         player.body.setVelocity(0);
 
@@ -176,60 +212,56 @@ let GameScene = new Phaser.Class({
         // Vertical movement
         if (cursors.up.isDown) {
             player.body.setVelocityY(-100);
-            player.anims.play('right', true);
+            player.anims.play('up', true);
         } else if (cursors.down.isDown) {
             player.body.setVelocityY(100);
-            player.anims.play('right', true);
+            player.anims.play('down', true);
         }
 
         // Normalize and scale the velocity so that player can't move faster along a diagonal
         player.body.velocity.normalize().scale(speed);
 
         //Spotlight
-
-
         // light.x = player.x;
         // light.y = player.y;
-    
-        
 
     },
 });
 
-function createPathFinder(map){
-  // takes a map object and creates an EasyStar path finder from it
-  // Most of this code is taken from: http://www.dynetisgames.com/2018/03/06/pathfinding-easystar-phaser-3/
-  // instantiate a new pathfinder object
-  var finder = new EasyStar.js();
+function createPathFinder(map) {
+    // takes a map object and creates an EasyStar path finder from it
+    // Most of this code is taken from: http://www.dynetisgames.com/2018/03/06/pathfinding-easystar-phaser-3/
+    // instantiate a new pathfinder object
+    var finder = new EasyStar.js();
 
-  // first we have to create a 2D grid out of the tile IDs in our map
-  var grid = [];
-  for(var y = 0; y < map.height; y++){
-    var col = [];
-    for(var x = 0; x < map.width; x++){
-      // In each cell we store the ID of the tile, which corresponds
-      // to its index in the tileset of the map ("ID" field in Tiled)
-      col.push(map.getTileAt(x,y).index);
+    // first we have to create a 2D grid out of the tile IDs in our map
+    var grid = [];
+    for (var y = 0; y < map.height; y++) {
+        var col = [];
+        for (var x = 0; x < map.width; x++) {
+            // In each cell we store the ID of the tile, which corresponds
+            // to its index in the tileset of the map ("ID" field in Tiled)
+            col.push(map.getTileAt(x, y).index);
+        }
+        grid.push(col);
     }
-    grid.push(col);
-  }
-  finder.setGrid(grid);
+    finder.setGrid(grid);
 
-  // now create a list of walkable tiles by only choosing the ones without the "collides" property
-  var walkable = [];
-  // get the tileset, and its property list
-  var tileset = map.tilesets[0];
-  var properties = tileset.tileProperties;
-  // loop through properties, and add those tiles which have "collides: false" to the walkable list
-  for (let i = tileset.firstgid-1; i < tileset.total-1; i++){
-    // if collides is false, add the tile to walkable
-    if (properties[i] && !properties[i].collides) walkable.push(i+1);
-  }
-  finder.setAcceptableTiles(walkable);
-  
-  return finder;
+    // now create a list of walkable tiles by only choosing the ones without the "collides" property
+    var walkable = [];
+    // get the tileset, and its property list
+    var tileset = map.tilesets[0];
+    var properties = tileset.tileProperties;
+    // loop through properties, and add those tiles which have "collides: false" to the walkable list
+    for (let i = tileset.firstgid - 1; i < tileset.total - 1; i++) {
+        // if collides is false, add the tile to walkable
+        if (properties[i] && !properties[i].collides) walkable.push(i + 1);
+    }
+    finder.setAcceptableTiles(walkable);
+
+    return finder;
 }
 
-function collidePlayerEnemy(player, enemy){
-  player.setTint(0xff0000);
+function collidePlayerEnemy(player, enemy) {
+    player.setTint(0xff0000);
 }
