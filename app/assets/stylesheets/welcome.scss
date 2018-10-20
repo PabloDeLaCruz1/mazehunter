@@ -3,6 +3,42 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 $main-red-color: #DD233D;
 
-body {
-    margin: 0;
+
+
+.body-image {
+    background-image: url("moveme.gif");
+    height: 100vh;
+    width: 100%; /* You must set a specified height */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover;
+  }
+
+text {
+  color: white;
+}
+
+.center {
+  position: absolute;
+  left: 550px;
+  top: 300px;
+  font-family: 'Nosifer', sans-serif;
+}
+
+h2 {
+  color: rgb(59, 13, 13);
+}
+
+@font-face {
+  font-family: 'Nosifer';
+  src: url(http://intavant.com/blog/2012/10-best-scary-web-fonts-for-halloween/);
+}
+
+.button {
+  padding: 0;
+  border: none;
+  font: inherit;
+  color: white;
+  background-color: transparent;
+  cursor: pointer;
 }
