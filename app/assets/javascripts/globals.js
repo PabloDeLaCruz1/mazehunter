@@ -8,7 +8,8 @@ let hitBomb = function (player, bomb) {
     gameOver = true;
 }
 
-let collectItem = function (player, item) {
+function collectItem(player, item) {
+    player.setTint(0xff0000);
 
     console.log(player);
     
@@ -17,6 +18,7 @@ let collectItem = function (player, item) {
     
     item.destroy();
 }
+
 
 //Will use this to generate "trust" effects or "dust" when player run/sprint/walk etc.
 //http://labs.phaser.io/view.html?src=src\games\defenda\test.js
