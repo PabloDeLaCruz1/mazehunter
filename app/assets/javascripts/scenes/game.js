@@ -10,7 +10,7 @@ var GameScene = new Phaser.Class({
             });
         },
     preload: function () {
-
+      
     },
     create: function () {
         // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
@@ -36,19 +36,36 @@ var GameScene = new Phaser.Class({
             collides: true
         });
 
-        // add an enemy
-        var enemy = this.physics.add.sprite(36, 500, 'dude');
-        enemy.setTint(0xff0000);
-        enemy.setOrigin(0,0.5);
-        
-        enemy = Enemy(enemy);
+        // SHORTCUT FUNCTIONS
+        // create a shortcut of the toTileCoordinates function, bound to the map in this scene
+        var t = toTileCoordinates.bind(this.map);
+        // shortcut for toWorldCoordinates, similar to above
+        var w = toWorldCoordinates.bind(this.map);
+        // shortcut for alignWithMap
+        var m = alignWithMap.bind(this.map);
+        // shortcut for this.physics.add.sprite
+        this.physicsAdd = function(x, y, spriteKey){
+          console.log();
+          let aligned = m(x, y);
+          return this.physics.add.sprite(aligned.x, aligned.y, spriteKey);
+        }
+
+        // add some enemies
+        var enemy1 = Enemy(this.physicsAdd(36, 500, 'dude'));
+        var enemy2 = Enemy(this.physicsAdd(266, 490, 'dude'));
+        // var enemy3 = Enemy(this.physics.add.sprite(36, 500, 'dude'));
+
+        // set the patrol path that the enemies will follow
+        enemy1.createPatrol(t(273,236));
+        enemy2.createPatrol(t(410,230));
 
         this.camera = this.cameras.main;
 
         this.input.on('pointerup', function(pointer){
           var x = this.scene.camera.scrollX + pointer.x;
           var y = this.scene.camera.scrollY + pointer.y;
-          enemy.goTo(x,y);
+          console.log(x,y);
+          enemy.patrol();
         });
 
         //     //Load Player
@@ -88,8 +105,9 @@ var GameScene = new Phaser.Class({
         this.physics.add.collider(player, bombs, hitBomb, null, this);
         // physics collisions
         this.physics.add.collider(player, mainLayer);
-        this.physics.add.collider(enemy, mainLayer);
-        this.physics.add.overlap(player, enemy, collidePlayerEnemy);
+        this.physics.add.overlap(player, enemy1, collidePlayerEnemy);
+        this.physics.add.overlap(player, enemy2, collidePlayerEnemy);
+
     },
 
     update: function (time, delta) {
@@ -135,6 +153,34 @@ var GameScene = new Phaser.Class({
 
     },
 });
+
+function toTileCoordinates(x, y, size){
+  // if calling this function without binding "this" to a TileMap object,
+  // you must explicitly pass in the tile size
+  size = size || this.tileWidth;
+  return {
+    x: Math.floor(x/size),
+    y: Math.floor(y/size)
+  }
+}
+function toWorldCoordinates(x, y, size){
+  // if calling this function without binding "this" to a TileMap object,
+  // you must explicitly pass in the tile size
+  size = size || this.tileWidth;
+  return {
+    x: x * size,
+    y: y * size
+  }
+}
+function alignWithMap(x, y, size){
+  // takes world coordinates and returns an object containing 
+  // coordinates aligned to the map tiles
+  // like the other converter functions, you must either bind "this"
+  // to a TileMap object, or pass the tile size explicitly
+  size = size || this.tileWidth;
+  var tileCoords = toTileCoordinates(x,y,size);
+  return toWorldCoordinates(tileCoords.x, tileCoords.y, size);
+}
 
 function createPathFinder(map){
   // takes a map object and creates an EasyStar path finder from it

@@ -101,7 +101,7 @@ var PreLoadScene = new Phaser.Class({
   create: function() {
 
       console.log("Preload complete, running main world scene now");
-      this.game.scene.start("MenuScene")
+      this.game.scene.start("GameScene")
 
   },
 
