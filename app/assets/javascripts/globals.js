@@ -64,10 +64,14 @@ let player = {
 let items = {
 
 }
-let player2;
 let myPlayer;
 let cursors;
 let score = 0;
 let scoreText;
 let light;
 var gameOver = false;
+var info_lives;
+var info_timer;
+var lives = 3;
+var timer;
+var result;

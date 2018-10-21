@@ -11,15 +11,13 @@ let GameScene = new Phaser.Class({
         },
     preload: function () {
 
-
     },
     create: function () {
-
+    
         // create your world here
         this.lights.enable().setAmbientColor(0x111111);
         light = this.lights.addLight(0, 0, 400).setColor(0xffffff).setIntensity(2);
         //.setScrollFactor(0.0);
-
 
         // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
         // Phaser's cache (i.e. the name you used in preload)
@@ -40,19 +38,6 @@ let GameScene = new Phaser.Class({
         const topLayer = map.createDynamicLayer("topLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
         const treeLayer = map.createDynamicLayer("treeLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
 
-        // const magecityLayer = map.createStaticLayer("magecityLayer", magecityTileSet, 0, 0);
-        // const wallLayer = map.createStaticLayer("wallLayer", wallTileSet, 0, 0);
-        // const treesLayer = map.createStaticLayer("treesLayer", treesTileSet, 0, 0);
-        // const dungeonLayer = map.createStaticLayer("dungeonLayer", dungeonTileSet, 0, 0);
-
-        // const tileset = map.addTilesetImage("Maze1Tiles", "tiles");
-        // const mainLayer = map.createStaticLayer("Tile Layer 1", tileset, 0, 0);
-
-        // const tileset = map.addTilesetImage("Maze1Tiles", "tiles");
-        // const mainLayer = map.createStaticLayer("Tile Layer 1", tileset, 0, 0);
-        diamond1 = this.physics.add.sprite(55, 400, 'diamond');
-        diamond1.setInteractive();
-
 
         // this.finder = createPathFinder(map);
 
@@ -65,28 +50,28 @@ let GameScene = new Phaser.Class({
         });
 
         // add an enemy
-        var enemy = this.physics.add.sprite(36, 500, 'zombi');
+        var enemy = this.physics.add.sprite(70, 500, 'zombi');
         enemy.setOrigin(0,0.5);
         enemy.goTo = function(x, y){
           // code mostly taken from https://github.com/Jerenaux/pathfinding_tutorial/blob/master/js/game.js
           var tileSize = map.tileWidth;
-          var toX = Math.floor(x/tileSize);
-          var toY = Math.floor(y/tileSize);
+          var toX   = Math.floor(x/tileSize);
+          var toY   = Math.floor(y/tileSize);
           var fromX = Math.floor(this.x/tileSize);
           var fromY = Math.floor(this.y/tileSize);
           var entity = this;
-          this.scene.finder.findPath(fromX, fromY, toX, toY, function( path ) {
-            if (path === null) {
-              console.warn("Path was not found.");
-            } else {
-              entity.followPath(path);
-            }
-          });
-          this.scene.finder.calculate();
+          // this.scene.finder.findPath(fromX, fromY, toX, toY, function( path ) {
+          //   if (path === null) {
+          //     console.warn("Path was not found.");
+          //   } else {
+          //     entity.followPath(path);
+          //   }
+          // });
+          //this.scene.finder.calculate();
         }
 
         enemy.followPath = function(path){
-          console.log(path);
+          //console.log(path);
           var tweens = [];
           for(var i = 0; i < path.length-1; i++){
             var ex = path[i+1].x;
@@ -111,8 +96,8 @@ let GameScene = new Phaser.Class({
           enemy.goTo(x,y);
         });
 
-        //     //Load Players
-        player = this.physics.add.sprite(50, 600, 'zombi');
+        //Load Players
+        player = this.physics.add.sprite(90, 900, 'zombi');
         items.sword = this.add.image(50, 400, 'sword').setDisplaySize(32, 32);
         items.sword.name = "sword"
 
@@ -153,11 +138,9 @@ let GameScene = new Phaser.Class({
         });
 
         
-        //   //Enable keyboard movement
-          cursors = this.input.keyboard.createCursorKeys();
-        //   scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-
-        bombs = this.physics.add.group();
+        //Enable keyboard movement
+        cursors = this.input.keyboard.createCursorKeys();
+        //  scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
         //TODO refactor to use player and item class from ./objects
         this.physics.add.collider(player, topLayer);
         this.physics.add.collider(player, items.sword, collectItem, null, this)
@@ -173,15 +156,27 @@ let GameScene = new Phaser.Class({
         // physics collisions
         // 
         
+        //this.registry.set('lives', this.lives);
+        
+        //this.lives = 6;
+
+        //super({ key: 'UIScene', active: true });
+
+        //this.livesText;
+
         this.physics.add.overlap(player, enemy, collidePlayerEnemy);
+        info_lives = this.add.text(780, 30, lives, { font: '48px Arial', fill: '#000000' });
+        info_timer = this.add.text(510, 30, timer, { font: '48px Arial', fill: '#000000' });
+        timer = this.time.addEvent({ delay: 10000 });
+
     },
+      
+
+
+
+  //UPATE
 
     update: function (time, delta) {
-        if (gameOver)
-        {
-          return;
-        }
-
         // Stop any previous movement from the last frame
         // cursors = this.input.keyboard.createCursorKeys();
         let speed = 175;
@@ -213,19 +208,15 @@ let GameScene = new Phaser.Class({
         // Normalize and scale the velocity so that player can't move faster along a diagonal
         player.body.velocity.normalize().scale(speed);
 
-        //Spotlight
+        //Updates Death Counts
+        info_lives.setText('Lives: ' + lives);
 
+        //Updates Timer
+        info_timer.setText('Time: ' + Math.floor(10000 - timer.getElapsed()));
+        //Spotlight
 
     }
 });
-
-function collisionHandler(player, object){
-    console.log(this)
-    this.scene.start('MenuScene');
-    this.physics.pause();
-    gameOver = true;
-}
-
 
 function createPathFinder(map){
   // takes a map object and creates an EasyStar path finder from it
@@ -261,8 +252,16 @@ function createPathFinder(map){
   return finder;
 }
 
-function collidePlayerEnemy(player, enemy){
-  player.x = 80;
-  player.y = 700;
-}
+  function collidePlayerEnemy(player, enemy) {
+    if(lives === 0) {
+      gameOver()
+    } else {
+      lives--;
+    }
+    player.x = 90;
+    player.y = 900;
+  }
 
+//INTERESTING FOR COIN PICKUP - DO NOT ERASE THIS
+//function create() {  // create coins  for (var i = 0; i < vars.coinTotal; i++) {    var coin = game.coins.create(x, 0, 'coin');        coin.tween = game.add.tween(coin).to({ alpha: 0, y: 80, x: coin.x+(game.width/1.8) }, 1000, Phaser.Easing.Cubic.Out);    coin.pickedUp = false; // set flag on each coin to prevent multiple update calls    coin.tween.onComplete.add(function(coin, tween) {      coin.kill();    });  }}function update() {  // add collide event for pickup  game.physics.arcade.overlap(player, coin, coinPickup, null, this);}function coinPickup(player,coin) {  if (!coin.pickedUp) { // check if coin has already been picked up, if not proceed...    coin.pickedUp=true; // then immediately set it to true so it is only called once    game.coinCount += 1;    coin.tween.start();  }}
+// Edited January 3, 2016 by dr.au
