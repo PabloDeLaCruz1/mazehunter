@@ -10,7 +10,20 @@ let GameScene = new Phaser.Class({
             });
         },
     preload: function () {
-      
+      // Helper functions
+      this.createMapCollider = function(){
+        //TODO: change property "Collides" to "collides"
+        this.map.layers.forEach((layer)=>{
+          layer.tilemapLayer.setCollisionByProperty({Collides: true});
+        })
+      },
+
+      this.addMapCollider = function(object){
+        // adds collision between the given objects and each map layer in layers
+        this.map.layers.forEach((layer)=>{
+          this.physics.add.collider(object, layer.tilemapLayer)
+        });
+      }
     },
     create: function () {
 
@@ -29,6 +42,7 @@ let GameScene = new Phaser.Class({
             // tileHeight: 32
         });
         this.map = map;
+        gmap = map;
 
         const magecityTileSet = map.addTilesetImage( "magecity", "magecity");
         const wallTileSet = map.addTilesetImage( "walls", "walls");
@@ -55,15 +69,13 @@ let GameScene = new Phaser.Class({
 
 
         // TODO: make pathfinder work with new map (ideally, with ANY map)
-        // this.finder = createPathFinder(map);
+        this.finder = createPathFinder2(map);
 
         // this.lights.enable().setAmbientColor(0x000000);
         // light = this.lights.addLight(180, 80, 300).setColor(0xffffff).setIntensity(2).setScrollFactor(0.0);
         // mainLayer.setPipeline('Light2D');
-
-        topLayer.setCollisionByProperty({
-          Collides: true
-        });
+        gmediumLayer = mediumLayer;
+        this.createMapCollider();
 
         // SHORTCUT FUNCTIONS
         // create a shortcut of the toTileCoordinates function, bound to the map in this scene
@@ -80,12 +92,12 @@ let GameScene = new Phaser.Class({
         }
 
         // add some enemies
-        var enemy1 = Enemy(this.physicsAdd(36, 500, 'zombi'));
+        var enemy1 = Enemy(this.physicsAdd(96, 512, 'zombi'));
         var enemy2 = Enemy(this.physicsAdd(266, 490, 'zombi'));
 
         // set the patrol path that the enemies will follow
         // below lines commented out until pathfinder is working with new map
-        // enemy1.createPatrol(t(273,236));
+        enemy1.createPatrol(t(32,896));
         // enemy2.createPatrol(t(410,230));
 
         this.camera = this.cameras.main;
@@ -93,8 +105,8 @@ let GameScene = new Phaser.Class({
         this.input.on('pointerup', function(pointer){
           var x = this.scene.camera.scrollX + pointer.x;
           var y = this.scene.camera.scrollY + pointer.y;
-          console.log(x,y);
-          enemy.patrol();
+          console.log(m(x,y)); // DEBUGGING
+          console.log(t(x,y)); // DEBUGGING
         });
 
         //     //Load Players
@@ -102,6 +114,10 @@ let GameScene = new Phaser.Class({
         items.sword = this.add.image(50, 400, 'sword').setDisplaySize(32, 32);
         items.sword.name = "sword"
 
+
+        // change player's hitbox size
+        player.body.setSize(20,20);
+        player.body.setOffset(14,28);
 
         player.setDepth(10)
         //   //Player animations
@@ -144,9 +160,6 @@ let GameScene = new Phaser.Class({
         //   scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
         bombs = this.physics.add.group();
-        //TODO refactor to use player and item class from ./objects
-        this.physics.add.collider(player, topLayer);
-        this.physics.add.collider(player, items.sword, collectItem, null, this)
 
         
         // setTimeout(() => {
@@ -157,7 +170,9 @@ let GameScene = new Phaser.Class({
 
         // }, 2000)
         // physics collisions
-        this.physics.add.collider(player, topLayer);
+        //TODO refactor to use player and item class from ./objects
+        this.addMapCollider(player);
+        this.physics.add.collider(player, items.sword, collectItem, null, this);
         this.physics.add.overlap(player, enemy1, collidePlayerEnemy);
         this.physics.add.overlap(player, enemy2, collidePlayerEnemy);
 
@@ -203,6 +218,10 @@ let GameScene = new Phaser.Class({
         //Spotlight
 
 
+    },
+
+    render: function(){
+      
     }
 });
 
@@ -241,6 +260,54 @@ function collisionHandler(player, object){
     gameOver = true;
 }
 
+function createPathFinder2(map){
+  // takes a map object and creates an EasyStar path finder from it
+  // Most of this code is taken from: http://www.dynetisgames.com/2018/03/06/pathfinding-easystar-phaser-3/
+  // Modified to work with maps with multiple layers, each of which can have collideable tiles.
+  // Each layer in the map must have the same height and width
+
+  // instantiate a new pathfinder object
+  var finder = new EasyStar.js();
+
+  // create a 2D grid of map height x map width, initialized to all zero's.
+  // for our pathfinder, 0 will represent walkable tiles,
+  // and 1 represents collideable.
+  // other numbers may be added later to represent various costs
+  var grid = Array(map.height).fill().map(()=>{return Array(map.width).fill(0)});
+
+  // create an object to store the properties of every tile in every tileset in the map
+  var tiles = {};
+  // loop through each tileset in the map
+  for (let tileset of map.tilesets){
+    // copy the tile properties in this tileset into tiles
+    Object.assign(tiles, tileset.tileProperties);
+  }
+  gtiles = tiles; //DEBUGGING
+
+  // loop through each map layer
+  for (let layer of map.layers){
+    var data = layer.data;
+    // loop through the layer's data 2D array
+    for (let r = 0; r < map.height; r++){
+      for (let c = 0; c < map.width; c++){
+        // get  the index of this tile
+        var index = data[r][c].index;
+        // if this index is in tiles, and the "Collides" property is set,
+        // then set this coordinate in the grid to 1
+        if (tiles[index] && tiles[index].Collides) {
+          grid[r][c] = 1;
+        }
+      }
+    }
+  }
+
+  finder.setGrid(grid);
+  finder.setAcceptableTiles([0]);
+
+  // ggrid = grid; // DEBUGGING
+
+  return finder;
+}
 
 function createPathFinder(map){
   // takes a map object and creates an EasyStar path finder from it
