@@ -88,10 +88,18 @@ let PreLoadScene = new Phaser.Class({
 
       //Game Assests
       this.load.image('bomb', 'assets/bomb.png');
-      this.load.image('sword', 'assets/sword.png', {
-        frameHeight: 32,
-        frameWidth: 32
-      });
+    //   this.load.spritesheet('sword', 'assets/sword.png', {
+    //       frameHeight: 32,
+    //       frameWidth: 32
+    //   });
+
+    //   this.load.spritesheet('dude', 'assets/guy.png', {
+    //       frameWidth: 95,
+    //       frameHeight: 158
+    //   this.load.image('sword', 'assets/sword.png', {
+    //     frameHeight: 32,
+    //     frameWidth: 32
+    //   });
 
       this.load.spritesheet('dude', 'assets/dude.png', {
         frameWidth: 32,

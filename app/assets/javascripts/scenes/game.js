@@ -77,6 +77,7 @@ let GameScene = new Phaser.Class({
         gmediumLayer = mediumLayer;
         this.createMapCollider();
 
+
         // SHORTCUT FUNCTIONS
         // create a shortcut of the toTileCoordinates function, bound to the map in this scene
         var t = toTileCoordinates.bind(this.map);
@@ -109,10 +110,23 @@ let GameScene = new Phaser.Class({
           console.log(t(x,y)); // DEBUGGING
         });
 
+        //     //Load Player
+        // player = this.physics.add.sprite(50, 600, 'dude').setDisplaySize(50, 68);
+        // player.body._bounds.height = 32;
+        // player.body._bounds.width = 32;
         //     //Load Players
         player = this.physics.add.sprite(50, 600, 'zombi');
         items.sword = this.add.image(50, 400, 'sword').setDisplaySize(32, 32);
         items.sword.name = "sword"
+
+        console.log(player.body._bounds.width);
+        
+        items.sword = this.physics.add.sprite(50, 400, 'sword').setDisplaySize(32, 32);
+
+        items.sword.name = "sword"
+        // this.physics.add.collider(player, items.sword);
+
+        this.physics.add.collider(player, mainLayer);
 
 
         // change player's hitbox size
@@ -122,8 +136,52 @@ let GameScene = new Phaser.Class({
         player.setDepth(10)
         //   //Player animations
         const anims = this.anims;
-        anims.create({
+        // anims.create({
+        //     key: "idle",
+        //     frames: [{
+        //         key: 'dude',
+        //         frame: 0
+        //     }],
+        //     frameRate: 10,
+        //     repeat: -1
+        // });
+        // anims.create({
+        //     key: "down",
+        //     frames: anims.generateFrameNumbers('dude', {
+        //         start: 0,
+        //         end: 11
+        //     }),
+        //     frameRate: 10,
+        //     repeat: -1
+        // });
+        // anims.create({
+        //     key: "left",
+        //     frames: anims.generateFrameNumbers('dude', {
+        //         start: 12,
+        //         end: 23
+        //     }),
+        //     frameRate: 10,
+        //     repeat: -1
+        // });
+        // anims.create({
+        //     key: "right",
+        //     frames: anims.generateFrameNumbers('dude', {
+        //         start: 24,
+        //         end: 35
+        //     }),
+        //     frameRate: 10,
+        //     repeat: -1
+        // });
+        // anims.create({
+        //     key: "up",
+        //     frames: anims.generateFrameNumbers('dude', {
+        //         start: 36,
+        //         end: 47
+        //     }),
+        //     frameRate: 10,
+        //     repeat: -1
 
+        anims.create({
           key: "left",
           frames: anims.generateFrameNumbers('zombi', { start: 3, end: 5 }),
           frameRate: 10,
@@ -154,14 +212,12 @@ let GameScene = new Phaser.Class({
           repeat: -1
         });
 
-        
         //   //Enable keyboard movement
         cursors = this.input.keyboard.createCursorKeys();
         //   scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
         bombs = this.physics.add.group();
 
-        
         // setTimeout(() => {
         //     collectItem(player, items.sword)
         // }, 1000)
@@ -189,8 +245,8 @@ let GameScene = new Phaser.Class({
         let speed = 175;
         let prevVelocity = player.body.velocity.clone();
 
-        if (prevVelocity.x == 0 && prevVelocity.y == 0){
-          player.anims.play('idle');
+        if (prevVelocity.x == 0 && prevVelocity.y == 0) {
+            player.anims.play('idle');
         }
         player.body.setVelocity(0);
 
@@ -324,6 +380,7 @@ function createPathFinder(map){
       // to its index in the tileset of the map ("ID" field in Tiled)
       col.push(map.getTileAt(x,y).index);
     }
+
     grid.push(col);
   }
   finder.setGrid(grid);
@@ -346,5 +403,7 @@ function createPathFinder(map){
 function collidePlayerEnemy(player, enemy){
   player.x = 80;
   player.y = 700;
+  player.setTint(0xff0000);
+
 }
 
