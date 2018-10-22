@@ -29,17 +29,20 @@ h2 {
   color: rgb(59, 13, 13);
 }
 
-@font-face {
-  font-family: 'Nosifer';
-  //CORS error
-  // src: url(http://intavant.com/blog/2012/10-best-scary-web-fonts-for-halloween/);
-}
-
 .button {
   padding: 0;
   border: none;
-  font: inherit;
-  color: white;
+  color: rgb(65, 18, 18);
   background-color: transparent;
   cursor: pointer;
 }
+
+input {
+  border: 1px solid transparent;
+  color: transparent;
+  background-color: transparent;
+  height: 20px;
+  width: 200px;
+}
+
+
