@@ -10,10 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_17_185650) do
+ActiveRecord::Schema.define(version: 2018_10_22_011011) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "enemy_patrols", force: :cascade do |t|
+    t.text "name", null: false
+    t.json "data", null: false
+  end
 
   create_table "profiles", force: :cascade do |t|
     t.integer "wins"
