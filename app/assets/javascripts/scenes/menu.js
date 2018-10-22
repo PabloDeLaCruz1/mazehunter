@@ -31,14 +31,17 @@ let MenuScene = new Phaser.Class({
 
     this.add.sprite(600, 200, 'logo');
 
-    let startButton = this.add.image(600, 500, 'button-start', this.startGame, this, 5, 0, 1);
-    let multiplayerButton = this.add.image(600, 600, 'button-start', this.startGame, this, 2, 0, 1);
-    let howToButton = this.add.image(600, 700, 'button-start', this.startGame, this, 2, 0, 1);
+    let startButton = this.add.image(600, 500, 'button-start');
+    let multiplayerButton = this.add.image(600, 600, 'button-start');
+    let howToButton = this.add.image(600, 700, 'button-start');
 
 
     //Button Events 
     startButton.once('pointerup', function () {
       this.scene.start('GameScene');
+    }, this);
+    howToButton.once('pointerup', function () {
+      this.scene.start('HowToScene');
     }, this);
 
     [startButton, multiplayerButton, howToButton].forEach(btn => {
@@ -46,20 +49,16 @@ let MenuScene = new Phaser.Class({
       btn.on('pointerover', function () {
 
         this.setTint(0xff0000);
-
       });
-
       btn.on('pointerout', function () {
-
         this.setTint();
-
       });
     })
 
 
     let startButtonText = this.add.dynamicBitmapText(550, 480, 'desyrel', 'START!', 32);
     let multiplayerButtonText = this.add.dynamicBitmapText(490, 580, 'desyrel', 'MULTIPLAYER', 32);
-    let howToText = this.add.dynamicBitmapText(525, 680, 'desyrel', 'How To Play', 32);
+    let howToText = this.add.dynamicBitmapText(525, 680, 'desyrel', 'How To', 32);
 
     startButtonText.setDisplayCallback(textCallback);
     multiplayerButtonText.setDisplayCallback(textCallback);
@@ -140,6 +139,9 @@ let MenuScene = new Phaser.Class({
   },
   startGame: function () {
     this.game.scene.start("GameScene")
-  }
+  },
+  goToHowTo: function () {
+    this.game.scene.start("HowToScene")
+}
 
 });
