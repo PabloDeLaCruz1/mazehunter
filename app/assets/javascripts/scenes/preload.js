@@ -94,7 +94,7 @@ let PreLoadScene = new Phaser.Class({
     this.load.image('attack', 'assets/sword_stats.png');
     this.load.image('hourglass-stats', 'assets/hourglass.png');
     this.load.image('heart-stats', 'assets/heart.png');
-
+    
     this.load.spritesheet('zombi', 'assets/zombi.png', {
     frameWidth: 48,
     frameHeight: 48
