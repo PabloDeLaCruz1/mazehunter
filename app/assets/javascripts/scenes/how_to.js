@@ -10,8 +10,6 @@ let HowToScene = new Phaser.Class({
             });
         },
     preload: function () {
-        this.load.image('logo', 'assets/logo.png');
-
 
         this.load.image('how-to', 'assets/how-to.png');
         this.load.image('how-to-keys', 'assets/arrow-keys.png');
