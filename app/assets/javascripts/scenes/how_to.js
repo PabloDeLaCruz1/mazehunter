@@ -10,15 +10,8 @@ let HowToScene = new Phaser.Class({
             });
         },
     preload: function () {
-
-        this.load.image('how-to', 'assets/how-to.png');
-        this.load.image('how-to-keys', 'assets/arrow-keys.png');
-        this.load.image('button-start', 'assets/button-start.png');
-
-        this.load.bitmapFont('desyrel', 'assets/desyrel.png', 'assets/desyrel.xml');
-
-
-
+        this.load.image('how-to', gameAssets.howTo);
+        this.load.image('how-to-keys', gameAssets.arrowKeys);
     },
     create: function () {
 
@@ -36,7 +29,7 @@ let HowToScene = new Phaser.Class({
             this.scene.start('GameScene');
         }, this);
 
-        howToKeys.once('pointerup', function () {
+        menuButton.once('pointerup', function () {
             this.scene.start('MenuScene');
         }, this);
 

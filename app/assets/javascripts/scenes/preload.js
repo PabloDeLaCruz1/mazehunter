@@ -107,14 +107,14 @@ let PreLoadScene = new Phaser.Class({
         this.load.image('mask2', gameAssets.mask2);
 
         //Pablos map
-        this.load.image("tileset1", gameAssets.horrorTileset1);
-        this.load.image("tileset2", gameAssets.horrorTileset2);
-        this.load.image("tileset3", gameAssets.horrorTileset3);
-        this.load.image("tileset4", gameAssets.horrorTileset4);
-        this.load.image("tileset5", gameAssets.horrorTileset5);
-        this.load.image("tileset6", gameAssets.horrorTileset6);
-
-        this.load.tilemapTiledJSON("map", "assets/mainmap.json");
+        // this.load.image("horror_rpg_tileset1", gameAssets.horrorTileset1);
+        // this.load.image("horror_rpg_tileset2", gameAssets.horrorTileset2);
+        // this.load.image("horror_rpg_tileset3", gameAssets.horrorTileset3);
+        // this.load.image("horror_rpg_tileset4", gameAssets.horrorTileset4);
+        // this.load.image("horrorTileset5", gameAssets.horrorTileset5);
+        // this.load.image("horrorTileset6", gameAssets.horrorTileset6);
+        
+        // this.load.tilemapTiledJSON("mainMap", gameAssets.mainMap);
 
     },
 
@@ -168,7 +168,7 @@ let PreLoadScene = new Phaser.Class({
 
 
         console.log("Preload complete, running main world scene now");
-        this.game.scene.start("MenuScene")
+        this.game.scene.start("GameScene")
 
     },
 

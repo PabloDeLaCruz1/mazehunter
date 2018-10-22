@@ -116,22 +116,21 @@ GameScene = new Phaser.Class({
       // load the map for this level
 
       var tilemapName = "mainmap";
-      var tilemapFilePath = `/assets/${tilemapName}.json`;
+      var tilemapFilePath = gameAssets.mainMap;
       this.load.tilemapTiledJSON(tilemapName, tilemapFilePath);
       var tilesetNames = ['horror_rpg_tileset1', 'horror_rpg_tileset2', 'horror_rpg_tileset3', 'horror_rpg_tileset4', 'horror_rpg_tileset5', 'horror_rpg_tileset6'];
-      tilesetNames.forEach((name)=>{
-        this.load.image(name, `/assets/${name}.png`);
+      tilesetNames.forEach((name)=>{                
+        this.load.image(name, gameAssets[name]);
       });
 
       this.createMap = function(tilemapName){
         const map = this.make.tilemap({
             key: tilemapName
-            // tileWidth: 32,
-            // tileHeight: 32
+
         });
         this.map = map;
         gmap = map; // DEBUGGING
-        console.log(gmap);
+        
         
         map.tilesets.forEach((tileset)=>{
           map.addTilesetImage(tileset.name, tileset.name);
@@ -146,18 +145,6 @@ GameScene = new Phaser.Class({
         })
         this.gameContainer = this.add.container(0,0,tilemapLayers);
         gcontainer = this.gameContainer; // DEBUGGING
-        // OLD MAP CREATION CODE
-        // const magecityTileSet = map.addTilesetImage( "magecity", "magecity");
-        // const wallTileSet = map.addTilesetImage( "walls", "walls");
-        // const treesTileSet = map.addTilesetImage( "trees_plants", "trees");
-        // const dungeonTileSet = map.addTilesetImage( "ProjectUtumno_full", "dungeon");
-        
-        // var tilesets = [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet];
-        // var tilesets = map.tilesets;
-        // map.createDynamicLayer("bottomLayer", tilesets);
-        // map.createDynamicLayer("mediumLayer", tilesets);
-        // map.createDynamicLayer("topLayer", tilesets);
-        // map.createDynamicLayer("treeLayer", tilesets);
 
         return map;
       }
@@ -374,12 +361,12 @@ GameScene = new Phaser.Class({
 
 
         //Use this to debug collidable walls.
-//         const debugGraphics = this.add.graphics().setAlpha(0.75);
-// map.layers[2].tilemapLayer.renderDebug(debugGraphics, {
-//   tileColor: null, // Color of non-colliding tiles
-//   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-//   faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-// });
+        //         const debugGraphics = this.add.graphics().setAlpha(0.75);
+        // map.layers[2].tilemapLayer.renderDebug(debugGraphics, {
+        //   tileColor: null, // Color of non-colliding tiles
+        //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+        //   faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+        // });
     },
 
     update: function (time, delta) {

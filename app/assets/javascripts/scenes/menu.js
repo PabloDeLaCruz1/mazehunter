@@ -27,9 +27,9 @@ let MenuScene = new Phaser.Class({
 
     this.add.sprite(600, 200, 'logo');
 
-    let startButton = this.add.image(600, 500, 'button-start');
-    let multiplayerButton = this.add.image(600, 600, 'button-start');
-    let howToButton = this.add.image(600, 700, 'button-start');
+    let startButton = this.add.image(600, 500, 'button-start').setTint(0xff0000);
+    let multiplayerButton = this.add.image(600, 600, 'button-start').setTint(0xff0000);
+    let howToButton = this.add.image(600, 700, 'button-start').setTint(0xff0000);
 
 
     //Button Events 
