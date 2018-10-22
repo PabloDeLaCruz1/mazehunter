@@ -14,6 +14,8 @@ let GameScene = new Phaser.Class({
     },
     create: function () {
 
+        var camera1 = this.cameras.add(0, 0, 800, 600).setZoom(0.5);
+
         // create your world here
         this.lights.enable().setAmbientColor(0x111111);
         light = this.lights.addLight(0, 0, 400).setColor(0xffffff).setIntensity(2);
@@ -25,20 +27,38 @@ let GameScene = new Phaser.Class({
 
         const map = this.make.tilemap({
             key: "map"
-            // tileWidth: 32,
-            // tileHeight: 32
         });
         this.map = map;
 
-        const magecityTileSet = map.addTilesetImage("magecity", "magecity");
-        const wallTileSet = map.addTilesetImage("walls", "walls");
-        const treesTileSet = map.addTilesetImage("trees_plants", "trees");
-        const dungeonTileSet = map.addTilesetImage("ProjectUtumno_full", "dungeon");
 
-        const bottomLayer = map.createDynamicLayer("bottomLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
-        const mediumLayer = map.createDynamicLayer("mediumLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
-        const topLayer = map.createDynamicLayer("topLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
-        const treeLayer = map.createDynamicLayer("treeLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
+        //Pablos Map
+        const tileset1 = map.addTilesetImage("horror_rpg_tileset1", "tileset1");
+        const tileset2 = map.addTilesetImage("horror_rpg_tileset2", "tileset2");
+        const tileset3 = map.addTilesetImage("horror_rpg_tileset3", "tileset3");
+        const tileset4 = map.addTilesetImage("horror_rpg_tileset4", "tileset4");
+        const tileset5 = map.addTilesetImage("horror_rpg_tileset5", "tileset5");
+        const tileset6 = map.addTilesetImage("horror_rpg_tileset6", "tileset6");
+
+
+        // const bottomLayer = map.createDynamicLayer("bottomLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
+        // const mediumLayer = map.createDynamicLayer("mediumLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
+        const mainLayer = map.createDynamicLayer("Tile Layer 1", [tileset1, tileset2, tileset3, tileset4, tileset5, tileset6], 0, 0);
+        const secondLayer = map.createDynamicLayer("Tile Layer 2", [tileset1, tileset2, tileset3, tileset4, tileset5, tileset6], 0, 0)
+        const thirdLayer = map.createDynamicLayer("Tile Layer 3", [tileset1, tileset2, tileset3, tileset4, tileset5, tileset6], 0, 0)
+
+        // const treeLayer = map.createDynamicLayer("treeLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
+
+
+        //Marlons Map
+        // const magecityTileSet = map.addTilesetImage("magecity", "magecity");
+        // const wallTileSet = map.addTilesetImage("walls", "walls");
+        // const treesTileSet = map.addTilesetImage("trees_plants", "trees");
+        // const dungeonTileSet = map.addTilesetImage("ProjectUtumno_full", "dungeon");
+
+        // const bottomLayer = map.createDynamicLayer("bottomLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
+        // const mediumLayer = map.createDynamicLayer("mediumLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
+        // const topLayer = map.createDynamicLayer("topLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
+        // const treeLayer = map.createDynamicLayer("treeLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
 
         // const magecityLayer = map.createStaticLayer("magecityLayer", magecityTileSet, 0, 0);
         // const wallLayer = map.createStaticLayer("wallLayer", wallTileSet, 0, 0);
@@ -61,9 +81,9 @@ let GameScene = new Phaser.Class({
         // light = this.lights.addLight(180, 80, 300).setColor(0xffffff).setIntensity(2).setScrollFactor(0.0);
         // mainLayer.setPipeline('Light2D');
 
-        topLayer.setCollisionByProperty({
-            Collides: true
-        });
+        // topLayer.setCollisionByProperty({
+        //     Collides: true
+        // });
 
 
         // SHORTCUT FUNCTIONS
@@ -95,7 +115,7 @@ let GameScene = new Phaser.Class({
             var x = this.scene.camera.scrollX + pointer.x;
             var y = this.scene.camera.scrollY + pointer.y;
             console.log(x, y);
-            enemy.patrol();
+            enemy1.patrol();
         });
 
         //     //Load Player
@@ -217,7 +237,10 @@ let GameScene = new Phaser.Class({
 
         bombs = this.physics.add.group();
         //TODO refactor to use player and item class from ./objects
-        this.physics.add.collider(player, topLayer);
+        this.physics.add.collider(player, mainLayer);
+        // this.physics.add.collider(player, secondLayer);
+        // this.physics.add.collider(player, thirdLayer);
+
         this.physics.add.collider(player, items.sword, collectItem, null, this)
 
         // setTimeout(() => {
@@ -230,7 +253,6 @@ let GameScene = new Phaser.Class({
         // physics collisions
 
         this.physics.add.collider(player, items.sword, collectItem)
-        this.physics.add.collider(player, topLayer);
         this.physics.add.overlap(player, enemy1, collidePlayerEnemy);
         this.physics.add.overlap(player, enemy2, collidePlayerEnemy);
 
