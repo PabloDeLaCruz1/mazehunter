@@ -27,4 +27,4 @@
 /config/master.key
 
 # Ignore Gemfile.lock, since we're developing with different OS's
-Gemfile.lock
+# Gemfile.lock

@@ -318,34 +318,49 @@ GameScene = new Phaser.Class({
         //     repeat: -1
 
         anims.create({
-          key: "left",
-          frames: anims.generateFrameNumbers('zombi', { start: 3, end: 5 }),
-          frameRate: 10,
-          repeat: -1
+            key: "left",
+            frames: anims.generateFrameNumbers('zombi', {
+                start: 3,
+                end: 5
+            }),
+            frameRate: 10,
+            repeat: -1
         });
         anims.create({
-          key: "idle",
-          frames: [{key: 'zombi', frame: 1}],
-          frameRate: 10,
-          repeat: -1
+            key: "idle",
+            frames: [{
+                key: 'zombi',
+                frame: 1
+            }],
+            frameRate: 10,
+            repeat: -1
         });
         anims.create({
-          key: "right",
-          frames: anims.generateFrameNumbers('zombi', { start: 6, end: 8 }),
-          frameRate: 10,
-          repeat: -1
+            key: "right",
+            frames: anims.generateFrameNumbers('zombi', {
+                start: 6,
+                end: 8
+            }),
+            frameRate: 10,
+            repeat: -1
         });
         anims.create({
-          key: "up",
-          frames: anims.generateFrameNumbers('zombi', { start: 9, end: 11 }),
-          frameRate: 10,
-          repeat: -1
+            key: "up",
+            frames: anims.generateFrameNumbers('zombi', {
+                start: 9,
+                end: 11
+            }),
+            frameRate: 10,
+            repeat: -1
         });
         anims.create({
-          key: "down",
-          frames: anims.generateFrameNumbers('zombi', { start: 0, end: 2 }),
-          frameRate: 10,
-          repeat: -1
+            key: "down",
+            frames: anims.generateFrameNumbers('zombi', {
+                start: 0,
+                end: 2
+            }),
+            frameRate: 10,
+            repeat: -1
         });
 
         //   //Enable keyboard movement
@@ -372,9 +387,8 @@ GameScene = new Phaser.Class({
     },
 
     update: function (time, delta) {
-        if (gameOver)
-        {
-          return;
+        if (gameOver) {
+            return;
         }
 
         updateSpotlight(this.spotlight, player.x, player.y);
