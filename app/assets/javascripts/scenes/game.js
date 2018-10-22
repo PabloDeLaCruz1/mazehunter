@@ -64,9 +64,38 @@ return finder;
 }
 
 function collidePlayerEnemy(player, enemy){
-  player.x = 80;
-  player.y = 700;
-  player.setTint(0xff0000);
+  if (player.items.swordCount){
+    playerWins(player, enemy);
+  }
+  else {
+    enemyWins(player, enemy);
+  }
+}
+
+function enemyWins(player, enemy){
+  // this function runs if player and enemy interact, and enemy wins
+  player.lives--;
+  if (player.lives == 0){
+    console.log("game over");
+    // put game over logic here
+  }
+  else {
+    // send player back to spawn
+    // TODO: remove hard coding, read spawn position from a stored location
+    player.setPosition(50, 600);
+  }
+}
+
+function playerWins(player, enemy){
+  // this function runs if player and enemy interact, and player wins
+  // game logic
+  player.items.swordCount--;
+  // animations
+
+  // audio
+
+  //enemy dies
+  enemy.destroy();
 }
 
 function collectItem(player, item) {
@@ -252,6 +281,7 @@ GameScene = new Phaser.Class({
 
         // TODO: move this logic into a createPlayer function
         player = this.physicsAdd(50, 600, 'zombi');
+        player.lives = 3;
         player.items = {};
         player.items.swordCount = 0;
         player.items.diamondCount = 0;
