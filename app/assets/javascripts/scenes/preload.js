@@ -88,18 +88,15 @@ let PreLoadScene = new Phaser.Class({
 
         //Game Assests
         this.load.image('bomb', 'assets/bomb.png');
-        //   this.load.spritesheet('sword', 'assets/sword.png', {
-        //       frameHeight: 32,
-        //       frameWidth: 32
-        //   });
 
-        //   this.load.spritesheet('dude', 'assets/guy.png', {
-        //       frameWidth: 95,
-        //       frameHeight: 158
-        //   this.load.image('sword', 'assets/sword.png', {
-        //     frameHeight: 32,
-        //     frameWidth: 32
-        //   });
+        this.load.image('sword', 'assets/sword.png', {
+          frameHeight: 32,
+          frameWidth: 32
+        });
+        this.load.image('diamond', 'assets/diamond.png', {
+          frameHeight: 32,
+          frameWidth: 28
+        });
 
         this.load.spritesheet('dude', 'assets/dude.png', {
             frameWidth: 32,
@@ -111,6 +108,10 @@ let PreLoadScene = new Phaser.Class({
             frameWidth: 48,
             frameHeight: 48
         });
+
+        // load masks for the spotlight
+        this.load.image('mask1', '/assets/mask1.png');
+        this.load.image('mask2', '/assets/mask2.png');
 
         //Pablos map
         this.load.image("tileset1", "assets/horror_rpg_tileset1.png");
