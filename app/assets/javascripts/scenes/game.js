@@ -10,10 +10,12 @@ let GameScene = new Phaser.Class({
             });
         },
     preload: function () {
-
+      
+      this.load.image('stats-bar', 'assets/button-start.png');
+      this.load.image('test-image', 'assets/test-image.png');
     },
     create: function () {
-    
+
         // create your world here
         this.lights.enable().setAmbientColor(0x111111);
         light = this.lights.addLight(0, 0, 400).setColor(0xffffff).setIntensity(2);
@@ -38,15 +40,8 @@ let GameScene = new Phaser.Class({
         const topLayer = map.createDynamicLayer("topLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
         const treeLayer = map.createDynamicLayer("treeLayer", [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet])
 
-
-        // this.finder = createPathFinder(map);
-
-        // this.lights.enable().setAmbientColor(0x000000);
-        // light = this.lights.addLight(180, 80, 300).setColor(0xffffff).setIntensity(2).setScrollFactor(0.0);
-        // mainLayer.setPipeline('Light2D');
-
         topLayer.setCollisionByProperty({
-          Collides: true
+          collides: true
         });
 
         // add an enemy
@@ -60,14 +55,7 @@ let GameScene = new Phaser.Class({
           var fromX = Math.floor(this.x/tileSize);
           var fromY = Math.floor(this.y/tileSize);
           var entity = this;
-          // this.scene.finder.findPath(fromX, fromY, toX, toY, function( path ) {
-          //   if (path === null) {
-          //     console.warn("Path was not found.");
-          //   } else {
-          //     entity.followPath(path);
-          //   }
-          // });
-          //this.scene.finder.calculate();
+
         }
 
         enemy.followPath = function(path){
@@ -98,12 +86,9 @@ let GameScene = new Phaser.Class({
 
         //Load Players
         player = this.physics.add.sprite(90, 900, 'zombi');
-        items.sword = this.add.image(50, 400, 'sword').setDisplaySize(32, 32);
-        items.sword.name = "sword"
+        player.setDepth(1);
 
-
-        player.setDepth(10)
-        //   //Player animations
+        //Player animations
         const anims = this.anims;
         anims.create({
 
@@ -137,46 +122,70 @@ let GameScene = new Phaser.Class({
           repeat: -1
         });
 
-        
         //Enable keyboard movement
         cursors = this.input.keyboard.createCursorKeys();
-        //  scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-        //TODO refactor to use player and item class from ./objects
+        
+        //Set collision to the the Top Layer
         this.physics.add.collider(player, topLayer);
-        this.physics.add.collider(player, items.sword, collectItem, null, this)
 
+        graphics = this.add.graphics();
+        graphics.fillStyle(0x000000, 0.3);
+        graphics.fillRect(0, 0, 960, 960);
+        graphics.setVisible(true);
+
+        diamond = this.physics.add.group({
+          key: 'diamonds',
+          repeat: 3,
+          setXY: { x: 100, y: 750, stepX: 70}
+        });
+
+        sword          = this.physics.add.image(100, 600, 'attack').setDisplaySize(60, 30);
+
+        stats_diamonds = this.add.image(0, 0, 'stats-bar').setDisplaySize(200, 150);
+        img_diamond    = this.add.image(-30, 0, 'diamond-stats').setDisplaySize(25, 25);
+
+        stats_attack   = this.add.image(0, 0, 'stats-bar').setDisplaySize(200, 150);
+        img_sword      = this.add.image(-30, 0, 'attack').setDisplaySize(70, 40);
+
+        stats_timer    = this.add.image(0, 0, 'stats-bar').setDisplaySize(200, 150);
+        img_timer      = this.add.image(-40, 0, 'hourglass-stats').setDisplaySize(30, 30);
+
+        stats_lives    = this.add.image(0, 0, 'stats-bar').setDisplaySize(200, 150);
+        img_lives      = this.add.image(-30, 0, 'heart-stats').setDisplaySize(30, 30);
+
+        diamondContainer  = this.add.container(250, 850, [ stats_diamonds, img_diamond ]);
+        attackContainer   = this.add.container(433, 850, [ stats_attack, img_sword ]);
+        timerContainer    = this.add.container(616, 850, [ stats_timer, img_timer ]);
+        livesContainer    = this.add.container(800, 850, [ stats_lives, img_lives ]);
         
-        // setTimeout(() => {
-        //     collectItem(player, items.sword)
-        // }, 1000)
-        // setTimeout(() => {
-        //     console.log(player.inventory);
+        diamondContainer.setSize(stats_diamonds.width, img_diamond.height);
+        attackContainer.setSize(stats_attack.width, img_sword.height);
+        timerContainer.setSize(stats_timer.width, img_timer.height);
+        livesContainer.setSize(stats_lives.width, img_lives.height);
+         
+        this.diamondCollectSound = this.sound.add("coinPickup");
 
-        // }, 2000)
-        // physics collisions
-        // 
+        timer_text  = this.add.text(610, 830, timer,  { font: '30px Arial', fill:  '#ffffff' });
+        timer = this.time.addEvent({ delay: 10000 });
+        lives_text  = this.add.text(810, 830, lives,  { font: '30px Arial', fill:  '#ffffff' });
+        points_text = this.add.text(260, 830, '0',    { font: '30px Arial', fill:  '#ffffff' });
+        attack_text = this.add.text(440, 830, '0',    { font: '30px Arial', fill:  '#ffffff' });
         
-        //this.registry.set('lives', this.lives);
-        
-        //this.lives = 6;
-
-        //super({ key: 'UIScene', active: true });
-
-        //this.livesText;
+        this.diamondCollectSound = this.sound.add("coinPickup");
 
         this.physics.add.overlap(player, enemy, collidePlayerEnemy);
-        info_lives = this.add.text(780, 30, lives, { font: '48px Arial', fill: '#000000' });
-        info_timer = this.add.text(510, 30, timer, { font: '48px Arial', fill: '#000000' });
-        timer = this.time.addEvent({ delay: 10000 });
-
+        this.physics.add.overlap(player, diamond, collectDiamonds, null, this);
+        this.physics.add.overlap(player, sword, collectSwords, null, this);
     },
       
-
-
-
   //UPATE
 
     update: function (time, delta) {
+      if (gameOver)
+      {
+        return;
+      }
+      
         // Stop any previous movement from the last frame
         // cursors = this.input.keyboard.createCursorKeys();
         let speed = 175;
@@ -208,20 +217,16 @@ let GameScene = new Phaser.Class({
         // Normalize and scale the velocity so that player can't move faster along a diagonal
         player.body.velocity.normalize().scale(speed);
 
-        //Updates Death Counts
-        info_lives.setText('Lives: ' + lives);
+        // //Updates Death Counts
+        lives_text.setText(lives);
 
-        //Updates Timer
-        info_timer.setText('Time: ' + Math.floor(10000 - timer.getElapsed()));
-        //Spotlight
+        // //Updates Timer
+        timer_text.setText(Math.floor(10000 - timer.getElapsed()));
 
     }
 });
 
 function createPathFinder(map){
-  // takes a map object and creates an EasyStar path finder from it
-  // Most of this code is taken from: http://www.dynetisgames.com/2018/03/06/pathfinding-easystar-phaser-3/
-  // instantiate a new pathfinder object
   var finder = new EasyStar.js();
 
   // first we have to create a 2D grid out of the tile IDs in our map
@@ -252,16 +257,33 @@ function createPathFinder(map){
   return finder;
 }
 
-  function collidePlayerEnemy(player, enemy) {
-    if(lives === 0) {
-      gameOver()
-    } else {
-      lives--;
-    }
-    player.x = 90;
-    player.y = 900;
+function collidePlayerEnemy(player, enemy) {
+  if(lives === 0) {
+    gameOver()
+  } else {
+    lives--;
   }
+  player.x = 90;
+  player.y = 900;
+}
 
-//INTERESTING FOR COIN PICKUP - DO NOT ERASE THIS
-//function create() {  // create coins  for (var i = 0; i < vars.coinTotal; i++) {    var coin = game.coins.create(x, 0, 'coin');        coin.tween = game.add.tween(coin).to({ alpha: 0, y: 80, x: coin.x+(game.width/1.8) }, 1000, Phaser.Easing.Cubic.Out);    coin.pickedUp = false; // set flag on each coin to prevent multiple update calls    coin.tween.onComplete.add(function(coin, tween) {      coin.kill();    });  }}function update() {  // add collide event for pickup  game.physics.arcade.overlap(player, coin, coinPickup, null, this);}function coinPickup(player,coin) {  if (!coin.pickedUp) { // check if coin has already been picked up, if not proceed...    coin.pickedUp=true; // then immediately set it to true so it is only called once    game.coinCount += 1;    coin.tween.start();  }}
-// Edited January 3, 2016 by dr.au
+function collectDiamonds (player, diamond)
+{
+  diamond.disableBody(true, true);
+  this.diamondCollectSound.play();
+  //  Add and update the score
+  points += 10;
+  points_text.setText(points);
+
+}
+
+function collectSwords (player, sword)
+{
+  swords.disableBody(true, true);
+  // this.swordCollectSound.play();
+  //  Add and update the score
+  sword += 1;
+  attack_text.setText(swords);
+  console.log(swords);
+
+}

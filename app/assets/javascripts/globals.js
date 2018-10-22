@@ -1,12 +1,12 @@
-let hitBomb = function (player, bomb) {
-    this.physics.pause();
+// let hitBomb = function (player, bomb) {
+//     this.physics.pause();
 
-    player.setTint(0xff0000);
+//     player.setTint(0xff0000);
 
-    player.anims.play('turn');
+//     player.anims.play('turn');
 
-    gameOver = true;
-}
+//     gameOver = true;
+// }
 
 let collectItem = function (player, item) {
 
@@ -49,6 +49,7 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
+            debug: true,
             gravity: {
                 y: 0
             },
@@ -66,12 +67,30 @@ let items = {
 }
 let myPlayer;
 let cursors;
-let score = 0;
 let scoreText;
-let light;
-var gameOver = false;
-var info_lives;
-var info_timer;
-var lives = 3;
-var timer;
-var result;
+let lightlet 
+let gameOver = false;
+let diamond;
+let lives_text;
+let timer_text;
+let points_text;
+let lives = 3;
+let timer;
+let points = 0;
+let graphics;
+let sword;
+let diamondCollectSound;
+let swordCollectSound;
+
+//Stats bar variables
+let diamondContainer;
+let attackContainer;
+let timerContainer;
+let livesContainer;
+let statsBar;
+let stats_diamonds;
+let img_diamond;
+let stats_timer;
+let img_timer;
+let stats_lives;
+let img_lives;
