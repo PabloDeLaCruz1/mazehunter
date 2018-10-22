@@ -87,51 +87,35 @@ let PreLoadScene = new Phaser.Class({
         });
 
         //Game Assests
-        this.load.image('bomb', 'assets/bomb.png');
 
-        this.load.image('sword', 'assets/sword.png', {
-          frameHeight: 32,
-          frameWidth: 32
+        this.load.image('sword', gameAssets.sword, {
+            frameHeight: 32,
+            frameWidth: 32
         });
-        this.load.image('diamond', 'assets/diamond.png', {
-          frameHeight: 32,
-          frameWidth: 28
-        });
-
-        this.load.spritesheet('dude', 'assets/dude.png', {
-            frameWidth: 32,
-            frameHeight: 48
+        this.load.image('diamond', gameAssets.diamond, {
+            frameHeight: 32,
+            frameWidth: 28
         });
 
-
-        this.load.spritesheet('zombi', 'assets/zombi.png', {
+        this.load.spritesheet('zombi', gameAssets.zombi, {
             frameWidth: 48,
             frameHeight: 48
         });
 
         // load masks for the spotlight
-        this.load.image('mask1', '/assets/mask1.png');
-        this.load.image('mask2', '/assets/mask2.png');
+        this.load.image('mask1', gameAssets.mask1);
+        this.load.image('mask2', gameAssets.mask2);
 
         //Pablos map
-        this.load.image("tileset1", "assets/horror_rpg_tileset1.png");
-        this.load.image("tileset2", "assets/horror_rpg_tileset2.png");
-        this.load.image("tileset3", "assets/horror_rpg_tileset3.png");
-        this.load.image("tileset4", "assets/horror_rpg_tileset4.png");
-        this.load.image("tileset5", "assets/horror_rpg_tileset5.png");
-        this.load.image("tileset6", "assets/horror_rpg_tileset6.png");
+        this.load.image("tileset1", gameAssets.horrorTileset1);
+        this.load.image("tileset2", gameAssets.horrorTileset2);
+        this.load.image("tileset3", gameAssets.horrorTileset3);
+        this.load.image("tileset4", gameAssets.horrorTileset4);
+        this.load.image("tileset5", gameAssets.horrorTileset5);
+        this.load.image("tileset6", gameAssets.horrorTileset6);
 
-        this.load.tilemapTiledJSON("map", "assets/mainmap.json");       
+        this.load.tilemapTiledJSON("map", "assets/mainmap.json");
 
-        //MarlonsMap
-        // this.load.image("walls", "assets/walls.png");
-        // this.load.image("trees", "assets/trees_plants.png");
-        // this.load.image("dungeon", "assets/ProjectUtumno_full.png");
-        // this.load.image("magecity", "assets/magecity.png")
-        // this.load.tilemapTiledJSON("map", "assets/map-1.json");
-        //OLD MAP
-        // this.load.image("tiles", "assets/Maze1Tiles.png");
-        // this.load.tilemapTiledJSON("map", "assets/tilemap2.json");
     },
 
     create: function () {

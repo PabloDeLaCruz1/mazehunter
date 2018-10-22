@@ -105,7 +105,7 @@ function collectItem(player, item) {
   
   console.log(`${item.name} added to inventory`);
 
-  
+
   item.destroy();
 }
 
@@ -129,11 +129,17 @@ function collidePlayerDiamond(player, diamond) {
   // play any sounds
 }
 
+function collidePlayerGoal(player, goal){
+  // show win screen
+  console.log("you win!");
+}
+
 GameScene = new Phaser.Class({
 
     Extends: Phaser.Scene,
 
     initialize:
+
 
         function GameScene() {
             Phaser.Scene.call(this, {
@@ -142,10 +148,11 @@ GameScene = new Phaser.Class({
         },
     preload: function () {
       // load the map for this level
-      var tilemapName = "map-1";
+
+      var tilemapName = "mainmap";
       var tilemapFilePath = `/assets/${tilemapName}.json`;
       this.load.tilemapTiledJSON(tilemapName, tilemapFilePath);
-      var tilesetNames = ['walls', 'trees_plants', 'ProjectUtumno_full', 'magecity'];
+      var tilesetNames = ['horror_rpg_tileset1', 'horror_rpg_tileset2', 'horror_rpg_tileset3', 'horror_rpg_tileset4', 'horror_rpg_tileset5', 'horror_rpg_tileset6'];
       tilesetNames.forEach((name)=>{
         this.load.image(name, `/assets/${name}.png`);
       });
@@ -158,7 +165,8 @@ GameScene = new Phaser.Class({
         });
         this.map = map;
         gmap = map; // DEBUGGING
-
+        console.log(gmap);
+        
         map.tilesets.forEach((tileset)=>{
           map.addTilesetImage(tileset.name, tileset.name);
         });
@@ -200,7 +208,7 @@ GameScene = new Phaser.Class({
       this.createMapCollider = function(){
         //TODO: change property "Collides" to "collides"
         this.map.layers.forEach((layer)=>{
-          layer.tilemapLayer.setCollisionByProperty({Collides: true});
+          layer.tilemapLayer.setCollisionByProperty({collides: true});
         })
       }
 
@@ -209,6 +217,13 @@ GameScene = new Phaser.Class({
         this.map.layers.forEach((layer)=>{
           this.physics.add.collider(object, layer.tilemapLayer)
         });
+      }
+
+      this.createGoal = function(x,y){
+        var goal = this.physicsAdd(x,y);
+        goal.setOrigin(0,0);
+        goal.setSize(32,32);
+        return goal;
       }
 
       this.createSword = function(x,y){
@@ -224,7 +239,7 @@ GameScene = new Phaser.Class({
       }
     },
     create: function () {
-        const map = this.createMap("map-1");
+        const map = this.createMap("mainmap");
 
         // SHORTCUT FUNCTIONS
         // create a shortcut of the toTileCoordinates function, bound to the map in this scene
@@ -232,10 +247,12 @@ GameScene = new Phaser.Class({
         // shortcut for toWorldCoordinates, similar to above
         w = toWorldCoordinates.bind(map);
         // shortcut for alignWithMap
+
         m = alignWithMap.bind(map);
 
         // create map colliders from the "collides" property in the layers
-        this.createMapCollider();
+        // this.createMapCollider();
+
         // create the pathfinder for the map
         this.finder = createPathFinder(map);
 
@@ -266,6 +283,8 @@ GameScene = new Phaser.Class({
         // below lines commented out until pathfinder is working with new map
         enemy1.createPatrol(t(32,896));
         // enemy2.createPatrol(t(410,230));
+
+        var goal = this.createGoal(1836,1116);
         
         diamond1 = this.createDiamond(288, 320);
         diamond1.setOrigin(0,0);
@@ -280,7 +299,7 @@ GameScene = new Phaser.Class({
         });
 
         // TODO: move this logic into a createPlayer function
-        player = this.physicsAdd(50, 600, 'zombi');
+        player = this.physicsAdd(2085, 1584, 'zombi');
         player.lives = 3;
         player.items = {};
         player.items.swordCount = 0;
@@ -302,51 +321,6 @@ GameScene = new Phaser.Class({
         player.setDepth(10)
         //   //Player animations
         const anims = this.anims;
-        // anims.create({
-        //     key: "idle",
-        //     frames: [{
-        //         key: 'dude',
-        //         frame: 0
-        //     }],
-        //     frameRate: 10,
-        //     repeat: -1
-        // });
-        // anims.create({
-        //     key: "down",
-        //     frames: anims.generateFrameNumbers('dude', {
-        //         start: 0,
-        //         end: 11
-        //     }),
-        //     frameRate: 10,
-        //     repeat: -1
-        // });
-        // anims.create({
-        //     key: "left",
-        //     frames: anims.generateFrameNumbers('dude', {
-        //         start: 12,
-        //         end: 23
-        //     }),
-        //     frameRate: 10,
-        //     repeat: -1
-        // });
-        // anims.create({
-        //     key: "right",
-        //     frames: anims.generateFrameNumbers('dude', {
-        //         start: 24,
-        //         end: 35
-        //     }),
-        //     frameRate: 10,
-        //     repeat: -1
-        // });
-        // anims.create({
-        //     key: "up",
-        //     frames: anims.generateFrameNumbers('dude', {
-        //         start: 36,
-        //         end: 47
-        //     }),
-        //     frameRate: 10,
-        //     repeat: -1
-
         anims.create({
             key: "left",
             frames: anims.generateFrameNumbers('zombi', {
@@ -399,6 +373,7 @@ GameScene = new Phaser.Class({
 
         bombs = this.physics.add.group();
 
+
         // setTimeout(() => {
         //     collectItem(player, items.sword)
         // }, 1000)
@@ -413,7 +388,43 @@ GameScene = new Phaser.Class({
         this.physics.add.overlap(player, diamond1, collidePlayerDiamond);
         this.physics.add.overlap(player, enemy1, collidePlayerEnemy);
         this.physics.add.overlap(player, enemy2, collidePlayerEnemy);
+        this.physics.add.overlap(player, goal, collidePlayerGoal);
 
+        //Camera Layer
+        // var camera1 = this.cameras.add(0, 0, 1200, 850).setZoom(.5);
+
+        this.cameras.main.startFollow(player, true, 0.015, 0.015).setZoom(1);
+
+        //  Enable lights and set a dark ambient color
+        // this.lights.enable().setAmbientColor(0x333333);
+
+        // //  Add an image and set it to use Lights2D
+        // // var robot = this.add.image(-100, 0, 'robot').setOrigin(0).setScale(0.7);
+
+        // this.cameras.main.setPipeline('Light2D');
+
+        // //  Our spotlight. 100px radius and white in color.
+        // var light = this.lights.addLight(180, 80, 200).setColor(0xffffff).setIntensity(2);
+
+        // //  Track the pointer
+        // this.input.on('pointermove', function (pointer) {
+
+        //     light.x = pointer.x;
+        //     light.y = pointer.y;
+
+        // });
+
+
+        map.layers[2].tilemapLayer.setCollisionByProperty({collides: true});
+
+
+        //Use this to debug collidable walls.
+//         const debugGraphics = this.add.graphics().setAlpha(0.75);
+// map.layers[2].tilemapLayer.renderDebug(debugGraphics, {
+//   tileColor: null, // Color of non-colliding tiles
+//   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+//   faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+// });
     },
 
     update: function (time, delta) {
@@ -437,19 +448,19 @@ GameScene = new Phaser.Class({
 
         // Horizontal movement
         if (cursors.left.isDown) {
-            player.body.setVelocityX(-100);
+            player.body.setVelocityX(-speed);
             player.anims.play('left', true);
         } else if (cursors.right.isDown) {
-            player.body.setVelocityX(100);
+            player.body.setVelocityX(speed);
             player.anims.play('right', true);
         }
 
         // Vertical movement
         if (cursors.up.isDown) {
-            player.body.setVelocityY(-100);
+            player.body.setVelocityY(-speed);
             player.anims.play('up', true);
         } else if (cursors.down.isDown) {
-            player.body.setVelocityY(100);
+            player.body.setVelocityY(speed);
             player.anims.play('down', true);
         }
 
@@ -464,6 +475,7 @@ GameScene = new Phaser.Class({
     render: function(){
       
     }
+
 });
 
 })();

@@ -1,18 +1,18 @@
 let config = {
     type: Phaser.AUTO,
-    width: 2280,
-    height: 1710,
+    width: 1200,
+    height: 850,
     parent: "game-container",
     physics: {
         default: 'arcade',
         arcade: {
-            // debug: true, // for testing, remove in production
+            debug: true, // for testing, remove in production
             gravity: {
                 y: 0
             },
         }
     },
-    scene: [PreLoadScene, MenuScene, GameScene],
+    scene: [PreLoadScene, MenuScene, GameScene, HowToScene],
 };
 let player = {
     // type: "",
