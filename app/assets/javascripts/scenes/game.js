@@ -100,6 +100,11 @@ function collidePlayerDiamond(player, diamond) {
   // play any sounds
 }
 
+function collidePlayerGoal(player, goal){
+  // show win screen
+  console.log("you win!");
+}
+
 GameScene = new Phaser.Class({
 
     Extends: Phaser.Scene,
@@ -185,6 +190,13 @@ GameScene = new Phaser.Class({
         });
       }
 
+      this.createGoal = function(x,y){
+        var goal = this.physicsAdd(x,y);
+        goal.setOrigin(0,0);
+        goal.setSize(32,32);
+        return goal;
+      }
+
       this.createSword = function(x,y){
         var sword = this.physicsAdd(x,y,'sword');
         sword.setOrigin(0);
@@ -242,6 +254,8 @@ GameScene = new Phaser.Class({
         // below lines commented out until pathfinder is working with new map
         enemy1.createPatrol(t(32,896));
         // enemy2.createPatrol(t(410,230));
+
+        var goal = this.createGoal(1836,1116);
         
         diamond1 = this.createDiamond(288, 320);
         diamond1.setOrigin(0,0);
@@ -344,6 +358,7 @@ GameScene = new Phaser.Class({
         this.physics.add.overlap(player, diamond1, collidePlayerDiamond);
         this.physics.add.overlap(player, enemy1, collidePlayerEnemy);
         this.physics.add.overlap(player, enemy2, collidePlayerEnemy);
+        this.physics.add.overlap(player, goal, collidePlayerGoal);
 
         //Camera Layer
         // var camera1 = this.cameras.add(0, 0, 1200, 850).setZoom(.5);
