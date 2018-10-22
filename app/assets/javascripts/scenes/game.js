@@ -115,10 +115,10 @@ GameScene = new Phaser.Class({
     preload: function () {
       // load the map for this level
 
-      var tilemapName = "map-1";
+      var tilemapName = "mainmap";
       var tilemapFilePath = `/assets/${tilemapName}.json`;
       this.load.tilemapTiledJSON(tilemapName, tilemapFilePath);
-      var tilesetNames = ['walls', 'trees_plants', 'ProjectUtumno_full', 'magecity'];
+      var tilesetNames = ['horror_rpg_tileset1', 'horror_rpg_tileset2', 'horror_rpg_tileset3', 'horror_rpg_tileset4', 'horror_rpg_tileset5', 'horror_rpg_tileset6'];
       tilesetNames.forEach((name)=>{
         this.load.image(name, `/assets/${name}.png`);
       });
@@ -131,7 +131,8 @@ GameScene = new Phaser.Class({
         });
         this.map = map;
         gmap = map; // DEBUGGING
-
+        console.log(gmap);
+        
         map.tilesets.forEach((tileset)=>{
           map.addTilesetImage(tileset.name, tileset.name);
         });
@@ -173,7 +174,7 @@ GameScene = new Phaser.Class({
       this.createMapCollider = function(){
         //TODO: change property "Collides" to "collides"
         this.map.layers.forEach((layer)=>{
-          layer.tilemapLayer.setCollisionByProperty({Collides: true});
+          layer.tilemapLayer.setCollisionByProperty({collides: true});
         })
       }
 
@@ -197,7 +198,7 @@ GameScene = new Phaser.Class({
       }
     },
     create: function () {
-        const map = this.createMap("map-1");
+        const map = this.createMap("mainmap");
 
         // SHORTCUT FUNCTIONS
         // create a shortcut of the toTileCoordinates function, bound to the map in this scene
@@ -209,7 +210,8 @@ GameScene = new Phaser.Class({
         m = alignWithMap.bind(map);
 
         // create map colliders from the "collides" property in the layers
-        this.createMapCollider();
+        // this.createMapCollider();
+
         // create the pathfinder for the map
         this.finder = createPathFinder(map);
 
@@ -254,7 +256,7 @@ GameScene = new Phaser.Class({
         });
 
         // TODO: move this logic into a createPlayer function
-        player = this.physicsAdd(50, 600, 'zombi');
+        player = this.physicsAdd(2085, 1584, 'zombi');
         player.items = {};
         player.items.swordCount = 0;
         player.items.diamondCount = 0;
@@ -368,6 +370,16 @@ GameScene = new Phaser.Class({
         // });
 
 
+        map.layers[2].tilemapLayer.setCollisionByProperty({collides: true});
+
+
+        //Use this to debug collidable walls.
+//         const debugGraphics = this.add.graphics().setAlpha(0.75);
+// map.layers[2].tilemapLayer.renderDebug(debugGraphics, {
+//   tileColor: null, // Color of non-colliding tiles
+//   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+//   faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+// });
     },
 
     update: function (time, delta) {
@@ -391,19 +403,19 @@ GameScene = new Phaser.Class({
 
         // Horizontal movement
         if (cursors.left.isDown) {
-            player.body.setVelocityX(-100);
+            player.body.setVelocityX(-speed);
             player.anims.play('left', true);
         } else if (cursors.right.isDown) {
-            player.body.setVelocityX(100);
+            player.body.setVelocityX(speed);
             player.anims.play('right', true);
         }
 
         // Vertical movement
         if (cursors.up.isDown) {
-            player.body.setVelocityY(-100);
+            player.body.setVelocityY(-speed);
             player.anims.play('up', true);
         } else if (cursors.down.isDown) {
-            player.body.setVelocityY(100);
+            player.body.setVelocityY(speed);
             player.anims.play('down', true);
         }
 
