@@ -1,11 +1,17 @@
 (function(){
 
 // "local" globals, available within this closure
+
 function collisionHandler(player, object){
   console.log(this)
   this.scene.start('MenuScene');
   this.physics.pause();
   gameOver = true;
+}
+
+function updateSpotlight(spotlight, x, y){
+  spotlight.x = x;
+  spotlight.y = y;
 }
 
 function createPathFinder(map){
@@ -109,7 +115,6 @@ GameScene = new Phaser.Class({
       // load the map for this level
       var tilemapName = "map-1";
       var tilemapFilePath = `/assets/${tilemapName}.json`;
-      console.log(tilemapFilePath);
       this.load.tilemapTiledJSON(tilemapName, tilemapFilePath);
       var tilesetNames = ['walls', 'trees_plants', 'ProjectUtumno_full', 'magecity'];
       tilesetNames.forEach((name)=>{
@@ -132,6 +137,12 @@ GameScene = new Phaser.Class({
         map.layers.forEach((layer)=>{
           map.createDynamicLayer(layer.name, map.tilesets);
         });
+
+        var tilemapLayers = map.layers.map((layer)=>{
+          return layer.tilemapLayer;
+        })
+        this.gameContainer = this.add.container(0,0,tilemapLayers);
+        gcontainer = this.gameContainer; // DEBUGGING
         // OLD MAP CREATION CODE
         // const magecityTileSet = map.addTilesetImage( "magecity", "magecity");
         // const wallTileSet = map.addTilesetImage( "walls", "walls");
@@ -152,7 +163,9 @@ GameScene = new Phaser.Class({
       // shortcut for this.physics.add.sprite
       this.physicsAdd = function(x, y, spriteKey){
         let aligned = m(x, y);
-        return this.physics.add.sprite(aligned.x, aligned.y, spriteKey);
+        var object = this.physics.add.sprite(aligned.x, aligned.y, spriteKey);
+        object.setMask(this.circleMask);
+        return object;
       }
       // creates map colliders from layer properties
       this.createMapCollider = function(){
@@ -182,13 +195,8 @@ GameScene = new Phaser.Class({
       }
     },
     create: function () {
-
-        // create your world here
-        this.lights.enable().setAmbientColor(0x111111);
-        light = this.lights.addLight(0, 0, 400).setColor(0xffffff).setIntensity(2);
-        //.setScrollFactor(0.0);
-
         const map = this.createMap("map-1");
+
         // SHORTCUT FUNCTIONS
         // create a shortcut of the toTileCoordinates function, bound to the map in this scene
         t = toTileCoordinates.bind(map);
@@ -202,6 +210,25 @@ GameScene = new Phaser.Class({
         // create the pathfinder for the map
         this.finder = createPathFinder(map);
 
+        // create spotlight mask to follow player
+        spotlight = this.make.sprite({
+          x: 0,
+          y: 0,
+          key: 'mask1',
+          add: false
+        }).setDisplaySize(300,300);
+        circle = this.make.sprite({
+          x: 0,
+          y: 0,
+          key: 'mask2',
+          add: false
+        }).setDisplaySize(300,300);
+        this.spotlight = spotlight;
+        this.circle = circle;
+        this.spotlightMask = new Phaser.Display.Masks.BitmapMask(this, spotlight);
+        this.circleMask = new Phaser.Display.Masks.BitmapMask(this, circle);
+        this.gameContainer.setMask(this.spotlightMask);
+
         // add some enemies
         var enemy1 = Enemy(this.physicsAdd(96, 512, 'zombi'));
         var enemy2 = Enemy(this.physicsAdd(266, 490, 'zombi'));
@@ -214,10 +241,6 @@ GameScene = new Phaser.Class({
         diamond1 = this.createDiamond(288, 320);
         diamond1.setOrigin(0,0);
 
-        // this.lights.enable().setAmbientColor(0x000000);
-        // light = this.lights.addLight(180, 80, 300).setColor(0xffffff).setIntensity(2).setScrollFactor(0.0);
-        // mainLayer.setPipeline('Light2D');
-
         this.camera = this.cameras.main;
 
         this.input.on('pointerup', function(pointer){
@@ -226,12 +249,6 @@ GameScene = new Phaser.Class({
           console.log(m(x,y)); // DEBUGGING
           console.log(t(x,y)); // DEBUGGING
         });
-
-        //     //Load Player
-        // player = this.physics.add.sprite(50, 600, 'dude').setDisplaySize(50, 68);
-        // player.body._bounds.height = 32;
-        // player.body._bounds.width = 32;
-        //     //Load Players
 
         // TODO: move this logic into a createPlayer function
         player = this.physicsAdd(50, 600, 'zombi');
@@ -360,6 +377,10 @@ GameScene = new Phaser.Class({
           return;
         }
 
+        updateSpotlight(this.spotlight, player.x, player.y);
+        updateSpotlight(this.circle, player.x, player.y);
+
+
         // Stop any previous movement from the last frame
         // cursors = this.input.keyboard.createCursorKeys();
         let speed = 175;
@@ -400,34 +421,5 @@ GameScene = new Phaser.Class({
       
     }
 });
-
-// GLOBAL helpers, move these to globals
-toTileCoordinates = function(x, y, size){
-  // if calling this function without binding "this" to a TileMap object,
-  // you must explicitly pass in the tile size
-  size = size || this.tileWidth;
-  return {
-    x: Math.floor(x/size),
-    y: Math.floor(y/size)
-  }
-}
-toWorldCoordinates = function(x, y, size){
-  // if calling this function without binding "this" to a TileMap object,
-  // you must explicitly pass in the tile size
-  size = size || this.tileWidth;
-  return {
-    x: x * size,
-    y: y * size
-  }
-}
-alignWithMap = function(x, y, size){
-  // takes world coordinates and returns an object containing 
-  // coordinates aligned to the map tiles
-  // like the other converter functions, you must either bind "this"
-  // to a TileMap object, or pass the tile size explicitly
-  size = size || this.tileWidth;
-  var tileCoords = toTileCoordinates(x,y,size);
-  return toWorldCoordinates(tileCoords.x, tileCoords.y, size);
-}
 
 })();

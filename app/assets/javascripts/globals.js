@@ -1,37 +1,3 @@
-let hitBomb = function (player, bomb) {
-    this.physics.pause();
-
-    player.setTint(0xff0000);
-
-    player.anims.play('turn');
-
-    gameOver = true;
-}
-
-
-//Will use this to generate "trust" effects or "dust" when player run/sprint/walk etc.
-//http://labs.phaser.io/view.html?src=src\games\defenda\test.js
-function createThrustEmitter ()
-{
-    this.thrust = this.add.particles('jets').createEmitter({
-        x: 1600,
-        y: 200,
-        angle: { min: 160, max: 200 },
-        scale: { start: 0.2, end: 0 },
-        blendMode: 'ADD',
-        lifespan: 600,
-        on: false
-    });
-}
-
-//Used for menu buttons
-function textCallback (data)
-{
-    data.x = Phaser.Math.Between(data.x - 2, data.x + 2);
-    data.y = Phaser.Math.Between(data.y - 1, data.y + 1);
-
-    return data;
-}
 let config = {
     type: Phaser.AUTO,
     width: 960,
@@ -40,7 +6,7 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true, // for testing, remove in production
+            // debug: true, // for testing, remove in production
             gravity: {
                 y: 0
             },

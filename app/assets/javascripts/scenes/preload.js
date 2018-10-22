@@ -111,6 +111,9 @@ let PreLoadScene = new Phaser.Class({
         frameHeight: 48
       });
 
+      this.load.image('mask1', '/assets/mask1.png');
+      this.load.image('mask2', '/assets/mask2.png');
+
     // this.load.image("walls", "<%= image_url("walls.png") %>");
     // this.load.image("trees", "<%= image_url("trees_plants.png") %>");
     // this.load.image("dungeon", "<%= image_url("ProjectUtumno_full.png") %>");
