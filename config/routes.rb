@@ -16,8 +16,12 @@ Rails.application.routes.draw do
   post "/signup", to: "users#create"
   delete "/logout", to: "sessions#destroy", as: "logout"
 
-  # game editor
+  # game editor (COMING SOON)
   get 'game/editor', to: "game_editor#index", as: 'game_editor'  
+
+  # multiplayer (COMING SOON)
+  get 'multiplayer', to: "welcome#multiplayer", as: 'multiplayer'
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   resources :users, except: [:new]
 end
