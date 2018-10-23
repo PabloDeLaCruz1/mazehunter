@@ -59,8 +59,9 @@ function createThrustEmitter ()
 //Used for menu buttons
 function textCallback (data)
 {
-  data.x = Phaser.Math.Between(data.x - 2, data.x + 2);
-  data.y = Phaser.Math.Between(data.y - 1, data.y + 1);
+  
+  data.x = Phaser.Math.Between(data.x, data.x + .5 );
+  data.y = Phaser.Math.Between(data.y, data.y + .5 );
 
   return data;
 }

@@ -168,11 +168,11 @@ let PreLoadScene = new Phaser.Class({
 
 
         console.log("Preload complete, running main world scene now");
-        this.game.scene.start("GameScene")
+        this.game.scene.start("MenuScene")
 
     },
 
-    update: function () {
+    update: function () {   
 
     }
 });

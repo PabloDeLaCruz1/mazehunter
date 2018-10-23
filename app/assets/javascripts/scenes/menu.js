@@ -13,7 +13,7 @@ let MenuScene = new Phaser.Class({
 
     this.load.image('dark-smoke', gameAssets.smokepuffParticle);
     this.load.image('white-smoke', gameAssets.smokeParticle);
-    this.load.image('logo', gameAssets.logo);
+    this.load.image('main-logo', gameAssets.mainLogo);
     this.load.image('background', gameAssets.menuBackground);
 
     this.load.image('button-start', gameAssets.buttonStart);
@@ -25,11 +25,11 @@ let MenuScene = new Phaser.Class({
 
     this.add.sprite(600, 400, 'background');
 
-    this.add.sprite(600, 200, 'logo');
+    this.add.sprite(600, 200, 'main-logo');
 
-    let startButton = this.add.image(600, 500, 'button-start').setTint(0xff0000);
-    let multiplayerButton = this.add.image(600, 600, 'button-start').setTint(0xff0000);
-    let howToButton = this.add.image(600, 700, 'button-start').setTint(0xff0000);
+    let startButton = this.add.image(600, 500, 'button-start');
+    let multiplayerButton = this.add.image(600, 600, 'button-start');
+    let howToButton = this.add.image(600, 700, 'button-start');
 
 
     //Button Events 
@@ -121,9 +121,64 @@ let MenuScene = new Phaser.Class({
     });
 
     darkSmoke.reserve(1000);
-    darkSmoke.setPosition(150, 790);
+    darkSmoke.setPosition(150, 875);
 
-    whiteSmoke.setPosition(1000, 790);
+    whiteSmoke.setPosition(1000, 875);
+
+    let whiteSmoke2 = this.add.particles('white-smoke').createEmitter({
+      x: 400,
+      y: 300,
+      speed: {
+        min: 10,
+        max: 200
+      },
+      angle: {
+        min: 0,
+        max: 360
+      },
+      scale: {
+        start: 1,
+        end: 0
+      },
+      alpha: {
+        start: 0,
+        end: 0.1
+      },
+      lifespan: 2000,
+      //active: false
+    });
+    whiteSmoke2.reserve(1000);
+
+    let darkSmoke2 = this.add.particles('dark-smoke').createEmitter({
+      x: 400,
+      y: 300,
+      speed: {
+        min: 10,
+        max: 200
+      },
+      angle: {
+        min: 0,
+        max: 360
+      },
+      scale: {
+        start: 1,
+        end: 0
+      },
+      alpha: {
+        start: 0,
+        end: 0.3
+      },
+      blendMode: 'SCREEN',
+      lifespan: 2000,
+      //active: false
+
+    });
+
+    darkSmoke2.reserve(1000);
+    darkSmoke2.setPosition(150, 5);
+
+    whiteSmoke2.setPosition(1000, 5);
+    
 
 
 
