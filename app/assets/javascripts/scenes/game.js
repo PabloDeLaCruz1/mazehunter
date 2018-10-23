@@ -2,13 +2,6 @@
 
 // "local" globals, available within this closure
 
-function collisionHandler(player, object){
-  console.log(this)
-  this.scene.start('MenuScene');
-  this.physics.pause();
-  gameOver = true;
-}
-
 function updateSpotlight(spotlight, x, y){
   spotlight.x = x;
   spotlight.y = y;
@@ -63,10 +56,49 @@ finder.setAcceptableTiles([0]);
 return finder;
 }
 
-function collidePlayerEnemy(player, enemy){
-  player.x = 80;
-  player.y = 700;
-  player.setTint(0xff0000);
+function collidePlayerEnemy(player, enemy) {
+  if(player.items.swordCount) {
+    playerWins(player, enemy);
+  } else {
+    enemyWins(player, enemy);
+  }
+}
+
+function playerWins(player, enemy) {
+  player.items.swordCount--;
+  zombie_death.play();
+  attack_text.setText(player.items.swordCount);
+  enemy.destroy();
+}
+
+function enemyWins(player, enemy) {
+  if(player.lives == 0) {
+
+    player_death.play();
+
+    if(player_death) {
+      player.destroy();
+      game_over.play();
+    }    
+    gameOver = true;
+    if(gameOver) {
+      this.time.delayedCall(500, function() {
+        this.scene.restart();
+      }, [], this);
+    }
+    
+  } else {
+    
+    player_death.play();
+    
+    player.lives--;
+    //Updates Death Counts
+    lives_text.setText(player.lives);
+    
+    player.x = 2016;
+    
+    player.y = 1584;
+  }
 }
 
 function collectItem(player, item) {
@@ -80,17 +112,6 @@ function collectItem(player, item) {
   item.destroy();
 }
 
-
-// function collectDiamonds (player, diamond)
-// {
-//   diamond.disableBody(true, true);
-//   this.diamondCollectSound.play();
-//   //  Add and update the score
-//   points += 10;
-//   points_text.setText(points);
-
-// }
-
 function collidePlayerSword(player, sword) {
   // game logic
   player.items.swordCount++;
@@ -98,22 +119,20 @@ function collidePlayerSword(player, sword) {
   // update visuals
   attack_text.setText(player.items.swordCount);
 
+  console.log(this)
   // play any sounds
-  // this.swordCollectSound.play();
+  swordCollectSound.play();
 
   sword.destroy();
 }
 
 function collidePlayerDiamond(player, diamond) {
-  // game logic
-  // player.items.diamondCount++;
-
   // update visuals
   points += 10;
   points_text.setText(points);
 
   // play any sounds
-  this.diamondCollectSound.play();
+  diamondCollectSound.play();
 
   diamond.destroy();
 }
@@ -187,7 +206,7 @@ GameScene = new Phaser.Class({
       this.physicsAdd = function(x, y, spriteKey){
         let aligned = m(x, y);
         var object = this.physics.add.sprite(aligned.x, aligned.y, spriteKey);
-        object.setMask(this.circleMask);
+        // object.setMask(this.circleMask);
         return object;
       }
       // creates map colliders from layer properties
@@ -206,7 +225,7 @@ GameScene = new Phaser.Class({
       }
 
       this.createSword = function(x,y){
-        var sword = this.physicsAdd(x,y,'sword');
+        var sword = this.physicsAdd(x,y,'attack').setDisplaySize(60, 30);
         sword.setOrigin(0);
         return sword;
       }
@@ -216,9 +235,22 @@ GameScene = new Phaser.Class({
         diamond.setOrigin(0);
         return diamond;
       }
+
     },
+
     create: function () {
+
+        let background_music = this.sound.add("background-music");
+        // background_music.play();
+        background_music.pause();
+  
         const map = this.createMap("mainmap");
+
+        swordCollectSound   = this.sound.add("grab-sword");
+        diamondCollectSound = this.sound.add("diamond-pickup");
+        zombie_death        = this.sound.add("zombie-death");
+        player_death        = this.sound.add("player-death");
+        game_over           = this.sound.add("game-over");
 
         // SHORTCUT FUNCTIONS
         // create a shortcut of the toTileCoordinates function, bound to the map in this scene
@@ -252,19 +284,19 @@ GameScene = new Phaser.Class({
         this.circle = circle;
         this.spotlightMask = new Phaser.Display.Masks.BitmapMask(this, spotlight);
         this.circleMask = new Phaser.Display.Masks.BitmapMask(this, circle);
-        this.gameContainer.setMask(this.spotlightMask);
+        // this.gameContainer.setMask(this.spotlightMask);
 
         // add some enemies
-        var enemy1 = Enemy(this.physicsAdd(96, 512, 'zombi'));
+        var enemy1 = Enemy(this.physicsAdd(1800, 1116, 'zombi'));
         var enemy2 = Enemy(this.physicsAdd(266, 490, 'zombi'));
 
         // set the patrol path that the enemies will follow
         // below lines commented out until pathfinder is working with new map
-        enemy1.createPatrol(t(32,896));
+        enemy1.createPatrol(t(2088,1116));
         // enemy2.createPatrol(t(410,230));
         
-        diamond1 = this.createDiamond(288, 320);
-        diamond1.setOrigin(0,0);
+        // diamond1 = this.createDiamond(288, 320);
+        // diamond1.setOrigin(0,0);
 
         this.camera = this.cameras.main;
 
@@ -277,16 +309,17 @@ GameScene = new Phaser.Class({
 
         // TODO: move this logic into a createPlayer function
         player = this.physicsAdd(2085, 1584, 'zombi');
+        player.lives = 0;
         player.items = {};
         player.items.swordCount = 0;
         player.items.diamondCount = 0;
 
         console.log(player.body._bounds.width);
         
-        sword1 = this.createSword(50, 400);
-        sword1.setDisplaySize(32, 32);
+        // sword1 = this.createSword(50, 400);
+        // sword1.setDisplaySize(32, 32);
 
-        sword1.name = "sword"
+        // sword1.name = "sword"
         // this.physics.add.collider(player, items.sword);
 
 
@@ -344,22 +377,15 @@ GameScene = new Phaser.Class({
 
         //Enable keyboard movement
         cursors = this.input.keyboard.createCursorKeys();
-        
-        //Set collision to the the Top Layer
-        this.physics.add.collider(player, topLayer);
 
         graphics = this.add.graphics();
         graphics.fillStyle(0x000000, 0.3);
         graphics.fillRect(0, 0, 960, 960);
         graphics.setVisible(true);
 
-        diamond = this.physics.add.group({
-          key: 'diamonds',
-          repeat: 3,
-          setXY: { x: 100, y: 750, stepX: 70}
-        });
-
-        sword          = this.physics.add.image(100, 600, 'attack').setDisplaySize(60, 30);
+        let diamond = this.createDiamond(2016,1440);
+      
+        sword          = this.createSword(2052, 1332);
 
         stats_diamonds = this.add.image(0, 0, 'stats-bar').setDisplaySize(200, 150);
         img_diamond    = this.add.image(-30, 0, 'diamond-stats').setDisplaySize(25, 25);
@@ -372,32 +398,28 @@ GameScene = new Phaser.Class({
 
         stats_lives    = this.add.image(0, 0, 'stats-bar').setDisplaySize(200, 150);
         img_lives      = this.add.image(-30, 0, 'heart-stats').setDisplaySize(30, 30);
-
-        diamondContainer  = this.add.container(250, 850, [ stats_diamonds, img_diamond ]);
-        attackContainer   = this.add.container(433, 850, [ stats_attack, img_sword ]);
-        timerContainer    = this.add.container(616, 850, [ stats_timer, img_timer ]);
-        livesContainer    = this.add.container(800, 850, [ stats_lives, img_lives ]);
+      
+        diamondContainer  = this.add.container(1750+250, 1548, [ stats_diamonds, img_diamond ]);
+        attackContainer   = this.add.container(1750+433, 1548, [ stats_attack, img_sword ]);
+        timerContainer    = this.add.container(1750+616, 1548, [ stats_timer, img_timer ]);
+        livesContainer    = this.add.container(1750+800, 1548, [ stats_lives, img_lives ]);
         
         diamondContainer.setSize(stats_diamonds.width, img_diamond.height);
         attackContainer.setSize(stats_attack.width, img_sword.height);
         timerContainer.setSize(stats_timer.width, img_timer.height);
         livesContainer.setSize(stats_lives.width, img_lives.height);
-         
-        this.diamondCollectSound = this.sound.add("coinPickup");
-
-        timer_text  = this.add.text(610, 830, timer,  { font: '30px Arial', fill:  '#ffffff' });
-        timer = this.time.addEvent({ delay: 10000 });
-        lives_text  = this.add.text(810, 830, lives,  { font: '30px Arial', fill:  '#ffffff' });
-        points_text = this.add.text(260, 830, '0',    { font: '30px Arial', fill:  '#ffffff' });
-        attack_text = this.add.text(440, 830, '0',    { font: '30px Arial', fill:  '#ffffff' });
         
-        this.diamondCollectSound = this.sound.add("coinPickup");
+        // console.log(this.diamondCollectSound);
+
+        timer_text  = this.add.text(1750+610, 1548, timer,  { font: '30px Arial', fill:  '#ffffff' });
+        timer       = this.time.addEvent({ delay: 10000 });
+        lives_text  = this.add.text(1750+810, 1548, player.lives,  { font: '30px Arial', fill:  '#ffffff' });
+        points_text = this.add.text(1750+260, 1548, '0',    { font: '30px Arial', fill:  '#ffffff' });
+        attack_text = this.add.text(1750+440, 1548, '0',    { font: '30px Arial', fill:  '#ffffff' });
+        
         //   //Enable keyboard movement
         cursors = this.input.keyboard.createCursorKeys();
         //   scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-
-        bombs = this.physics.add.group();
-
 
         // setTimeout(() => {
         //     collectItem(player, items.sword)
@@ -449,6 +471,9 @@ GameScene = new Phaser.Class({
 //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
 //   faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
 // });
+
+    // reset camera effects
+    this.cameras.main.resetFX();
     },
       
   //UPATE
@@ -492,9 +517,6 @@ GameScene = new Phaser.Class({
 
         // Normalize and scale the velocity so that player can't move faster along a diagonal
         player.body.velocity.normalize().scale(speed);
-
-        // //Updates Death Counts
-        lives_text.setText(lives);
 
         // //Updates Timer
         timer_text.setText(Math.floor(10000 - timer.getElapsed()));

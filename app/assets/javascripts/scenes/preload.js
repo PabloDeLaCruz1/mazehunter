@@ -85,27 +85,45 @@ let PreLoadScene = new Phaser.Class({
     });
 
     //Game Assests
-    this.load.image('diamonds', 'assets/diamond.png', { 
+    this.load.image('diamond', 'assets/diamond.png', { 
     frameHeight: 24,
     frameWidth: 32 
     });
 
+    //Image assets
     this.load.image('diamond-stats', 'assets/diamond.png');
     this.load.image('attack', 'assets/sword_stats.png');
     this.load.image('hourglass-stats', 'assets/hourglass.png');
     this.load.image('heart-stats', 'assets/heart.png');
-    
+    this.load.image('heart-stats', 'assets/heart.png');
+
+    //Place tomb when player dies last time ?
+    this.load.image('stomb', 'assets/tomb-stone.png');
+
+    //Audio assets
+    this.load.audio('diamond-pickup', 'assets/coinpickup.mp3');
+    this.load.audio('background-music', 'assets/terror-ambience.mp3');
+    this.load.audio('grab-sword', 'assets/grab-this.wav');
+    this.load.audio('zombie-death', 'assets/zombie-death.mp3');
+    this.load.audio('player-death', 'assets/player-death.wav');
+    this.load.audio('game-over', 'assets/game-over-evil.wav');
+
     this.load.spritesheet('zombi', 'assets/zombi.png', {
     frameWidth: 48,
     frameHeight: 48
     });
 
-    this.load.image("walls", "assets/walls.png");
-    this.load.image("trees", "assets/trees_plants.png");
-    this.load.image("dungeon", "assets/ProjectUtumno_full.png");
-    this.load.image("magecity", "assets/magecity.png")
-    this.load.tilemapTiledJSON("map", "assets/map-1.json");
-    this.load.audio("coinPickup", "assets/coinpickup.mp3");
+    // load masks for the spotlight
+    this.load.image('mask1', gameAssets.mask1);
+    this.load.image('mask2', gameAssets.mask2);
+
+    //Pablos map
+    this.load.image("tileset1", gameAssets.horrorTileset1);
+    this.load.image("tileset2", gameAssets.horrorTileset2);
+    this.load.image("tileset3", gameAssets.horrorTileset3);
+    this.load.image("tileset4", gameAssets.horrorTileset4);
+    this.load.image("tileset5", gameAssets.horrorTileset5);
+    this.load.image("tileset6", gameAssets.horrorTileset6);
 
 },
 

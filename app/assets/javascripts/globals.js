@@ -81,6 +81,11 @@ let graphics;
 let sword;
 let diamondCollectSound;
 let swordCollectSound;
+let zombie_death;
+let player_death;
+let game_over; 
+let fadeInOut;
+// let tomb_stone;
 
 //Stats bar variables
 let diamondContainer;
