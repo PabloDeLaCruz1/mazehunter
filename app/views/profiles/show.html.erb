@@ -1,0 +1,30 @@
+<div class= "body-tag">
+    <div class="header" >
+        <h1>HI <%= @user.email %> </h1>
+    </div>
+
+    <nav>
+        <%= link_to 'Edit Profile', edit_user_registration_path %> 
+    </nav><hr>
+
+
+        <div class="header">
+            <%= @user.email %> Stats;
+        </div>
+            <table>
+                <tr>
+                <th>Wins  |</th> 
+                <th>Best Time  |</th>
+                <th>Total Games  </th>
+            </tr>
+            <tr>
+            <td><%= @profile.id %>:</td>
+            <td><%= @profile.wins %>|</td>
+            <td><%= @profile.best_time %>|</td>
+            <td><%= @profile.total_games %></td>
+        </tr>
+
+    </table>
+</div>
+
+
