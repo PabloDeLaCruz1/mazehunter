@@ -23,8 +23,9 @@ let HowToScene = new Phaser.Class({
         let startButton = this.add.image(600, 650, 'button-start');
         let menuButton = this.add.image(600, 750, 'button-start');
 
-        this.add.dynamicBitmapText(550, 625, 'desyrel', 'START!', 32);
-        this.add.dynamicBitmapText(550, 725, 'desyrel', 'MENU!', 32);
+        let startButtonText = this.add.dynamicBitmapText(550, 625, 'desyrel', 'START!', 32);
+        let menuButtonText = this.add.dynamicBitmapText(550, 725, 'desyrel', 'MENU!', 32);
+
 
 
         startButton.once('pointerup', function () {
@@ -45,7 +46,8 @@ let HowToScene = new Phaser.Class({
                 this.setTint();
             });
         });
-
+        startButtonText.setDisplayCallback(textCallback);
+        menuButtonText.setDisplayCallback(textCallback);
     },
 
 
