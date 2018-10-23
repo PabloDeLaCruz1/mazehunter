@@ -244,6 +244,10 @@
     create: function () {
 
       let background_music = this.sound.add("background-music");
+      let background_whispers = this.sound.add("background-whispers")
+
+      background_music.play();
+      background_whispers.play();
 
 
       const map = this.createMap("mainmap");
@@ -473,9 +477,6 @@
     },
 
     update: function (time, delta) {
-      if(player.active) {
-        player.anims.play('left-hero', true);
-      }
       if (gameOver) {
         return;
       }

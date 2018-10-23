@@ -93,12 +93,11 @@ let PreLoadScene = new Phaser.Class({
     this.load.image('hourglass-stats', gameAssets.hourGlass);
     this.load.image('heart-stats', gameAssets.heart);
 
-    //Place tomb when player dies last time ?
-    this.load.image('stomb', gameAssets.tombStone);
-
     //Audiogame assets
     this.load.audio('diamond-pickup', gameAssets.coinPickup);
     this.load.audio('background-music', gameAssets.terrorAmbience);
+    this.load.audio('background-whispers', gameAssets.backgroundWhispers);
+    this.load.audio('background-menu-ambience', gameAssets.backgroundMenuAmbience);
     this.load.audio('grab-sword', gameAssets.grabThis);
     this.load.audio('zombie-death', gameAssets.zombieDeath);
     this.load.audio('player-death', gameAssets.playerDeath);
@@ -201,7 +200,7 @@ create: function() {
     key: "up-hero",
     frames: anims.generateFrameNumbers('hero-player', {
         start: 90,
-        end: 92
+        end: 93
     }),
     frameRate: 10,
     repeat: -1
