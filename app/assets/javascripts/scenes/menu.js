@@ -94,6 +94,7 @@ let MenuScene = new Phaser.Class({
       //active: false
     });
     whiteSmoke.reserve(1000);
+    whiteSmoke.setPosition(1000, 875);
 
     let darkSmoke = this.add.particles('dark-smoke').createEmitter({
       x: 400,
