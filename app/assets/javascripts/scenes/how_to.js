@@ -10,33 +10,28 @@ let HowToScene = new Phaser.Class({
             });
         },
     preload: function () {
-
-        this.load.image('how-to', 'assets/how-to.png');
-        this.load.image('how-to-keys', 'assets/arrow-keys.png');
-        this.load.image('button-start', 'assets/button-start.png');
-
-        this.load.bitmapFont('desyrel', 'assets/desyrel.png', 'assets/desyrel.xml');
-
-
+        this.load.image('how-to-background', gameAssets.howToBackground);
+        this.load.image('how-to-keys', gameAssets.arrowKeys);
+        this.load.image('how-to-logo', gameAssets.howToLogo);
 
     },
     create: function () {
 
-        let howToImage = this.add.image(600, 400, 'how-to');
-        let howToKeys = this.add.image(450, 500, 'how-to-keys').setDisplaySize(600, 300)
-        this.add.sprite(600, 200, 'logo');
+        this.add.image(600, 400, 'how-to-background');
+        this.add.image(450, 500, 'how-to-keys').setDisplaySize(600, 300)
+        this.add.sprite(600, 200, 'how-to-logo');
         let startButton = this.add.image(600, 650, 'button-start');
         let menuButton = this.add.image(600, 750, 'button-start');
 
-        let startButtonText = this.add.dynamicBitmapText(550, 625, 'desyrel', 'START!', 32);
-        let menuButtonText = this.add.dynamicBitmapText(550, 725, 'desyrel', 'MENU!', 32);
+        this.add.dynamicBitmapText(550, 625, 'desyrel', 'START!', 32);
+        this.add.dynamicBitmapText(550, 725, 'desyrel', 'MENU!', 32);
 
 
         startButton.once('pointerup', function () {
             this.scene.start('GameScene');
         }, this);
 
-        howToKeys.once('pointerup', function () {
+        menuButton.once('pointerup', function () {
             this.scene.start('MenuScene');
         }, this);
 
