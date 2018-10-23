@@ -99,7 +99,7 @@
 
       player.x = 2016;
 
-      player.y = 1584;
+      player.y = 1577;
     }
   }
 
@@ -324,7 +324,7 @@
       });
 
       // TODO: move this logic into a createPlayer function
-      player = this.physicsAdd(2085, 1584, 'zombi');
+      player = this.physicsAdd(2085, 1577, 'zombi');
       player.lives = 3;
       player.items = {};
       player.items.swordCount = 0;
@@ -413,10 +413,10 @@
       stats_lives = this.add.image(0, 0, 'stats-bar').setDisplaySize(200, 150);
       img_lives = this.add.image(-30, 0, 'heart-stats').setDisplaySize(30, 30);
 
-      diamondContainer = this.add.container(1750 + 250, 1548, [stats_diamonds, img_diamond]);
-      attackContainer = this.add.container(1750 + 433, 1548, [stats_attack, img_sword]);
-      timerContainer = this.add.container(1750 + 616, 1548, [stats_timer, img_timer]);
-      livesContainer = this.add.container(1750 + 800, 1548, [stats_lives, img_lives]);
+      diamondContainer = this.add.container(98, 35, [stats_diamonds, img_diamond]).setScrollFactor(0);
+      attackContainer = this.add.container(298, 35, [stats_attack, img_sword]).setScrollFactor(0);
+      timerContainer = this.add.container(1090, 35, [stats_timer, img_timer]).setScrollFactor(0);
+      livesContainer = this.add.container(890, 35, [stats_lives, img_lives]).setScrollFactor(0);
 
       diamondContainer.setSize(stats_diamonds.width, img_diamond.height);
       attackContainer.setSize(stats_attack.width, img_sword.height);
@@ -425,25 +425,27 @@
 
       // console.log(this.diamondCollectSound);
 
-      timer_text = this.add.text(1750 + 610, 1548, timer, {
+      timer_text = this.add.text(1100, 18, timer, {
         font: '30px Arial',
         fill: '#ffffff'
-      });
+      }).setScrollFactor(0);
+
       timer = this.time.addEvent({
         delay: 10000
       });
-      lives_text = this.add.text(1750 + 810, 1548, player.lives, {
+
+      lives_text = this.add.text(910, 18, player.lives, {
         font: '30px Arial',
         fill: '#ffffff'
-      });
-      points_text = this.add.text(1750 + 260, 1548, '0', {
+      }).setScrollFactor(0);
+      points_text = this.add.text(120, 18, '0', {
         font: '30px Arial',
         fill: '#ffffff'
-      });
-      attack_text = this.add.text(1750 + 440, 1548, '0', {
+      }).setScrollFactor(0);
+      attack_text = this.add.text(320, 18, '0', {
         font: '30px Arial',
         fill: '#ffffff'
-      });
+      }).setScrollFactor(0);
 
       //   //Enable keyboard movement
       cursors = this.input.keyboard.createCursorKeys();
@@ -605,7 +607,7 @@
       player.body.velocity.normalize().scale(speed);
 
       // //Updates Timer
-      timer_text.setText(Math.floor(10000 - timer.getElapsed()));
+      timer_text.setText(parseInt(Math.floor(this.sys.game.loop.time.toString()/1000)) - 3); // -3 to hotfix timer not starting at 0 because of loading time
 
 
     },
