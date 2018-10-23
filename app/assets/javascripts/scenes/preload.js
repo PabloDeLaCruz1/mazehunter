@@ -70,12 +70,10 @@ let PreLoadScene = new Phaser.Class({
     });
 
     this.load.on('fileprogress', function (file) {
-        // console.log(file.src);
-        assetText.setText('Loading asset: ' + file.src); //file.key for only the keys
+        assetText.setText('Loading asset: ' + file.key);
     });
 
     this.load.on('complete', function () {
-        // console.log('complete');
         progressBar.destroy();
         progressBox.destroy();
         loadingText.destroy();
@@ -114,14 +112,6 @@ let PreLoadScene = new Phaser.Class({
     // load masks for the spotlight
     this.load.image('mask1', gameAssets.mask1);
     this.load.image('mask2', gameAssets.mask2);
-
-    //Pablos map
-    // this.load.image("tileset1", gameAssets.horrorTileset1);
-    // this.load.image("tileset2", gameAssets.horrorTileset2);
-    // this.load.image("tileset3", gameAssets.horrorTileset3);
-    // this.load.image("tileset4", gameAssets.horrorTileset4);
-    // this.load.image("tileset5", gameAssets.horrorTileset5);
-    // this.load.image("tileset6", gameAssets.horrorTileset6);
 
 },
 
@@ -173,7 +163,7 @@ create: function() {
         repeat: -1
     });
     //console.log("Preload complete, running main world scene now")
-    this.game.scene.start("GameScene")
+    this.game.scene.start("MenuScene")
 
   },
 

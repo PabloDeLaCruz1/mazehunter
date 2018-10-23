@@ -1,7 +1,6 @@
 
 <div id="game-container">
   <%= javascript_include_tag 'game_application', 'data-turbolinks-track': 'reload' %>
-  <div id="game-container"></div>
   <div id='assets' data-menu-background="<%= image_url 'menu_background.png'%>"
     data-main-logo="<%= image_url 'main_logo.png'%>"
     data-smoke-particle="<%= image_url 'particles/smoke0.png'%>"
@@ -47,4 +46,5 @@
     let gameAssets = document.querySelector("#assets").dataset;
       let game = new Phaser.Game(config);
   </script>
+
 </div>

@@ -4,12 +4,9 @@
 
 
 
-
-
-
 body {
-    background-image: url("maze2.jpg");
-    height: 100vh;
+    background-image: image_url("maze2.png");
+    height: 150vh;
     width: 100%; /* You must set a specified height */
     background-position: center; /* Center the image */
     background-repeat: no-repeat; /* Do not repeat the image */
