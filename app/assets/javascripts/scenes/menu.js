@@ -56,7 +56,7 @@ let MenuScene = new Phaser.Class({
 
     let startButtonText = this.add.dynamicBitmapText(550, 480, 'desyrel', 'START!', 32);
     let multiplayerButtonText = this.add.dynamicBitmapText(490, 580, 'desyrel', 'MULTIPLAYER', 32);
-    let howToText = this.add.dynamicBitmapText(525, 680, 'desyrel', 'How To', 32);
+    let howToText = this.add.dynamicBitmapText(525, 680, 'desyrel', 'HOW TO', 32);
 
     startButtonText.setDisplayCallback(textCallback);
     multiplayerButtonText.setDisplayCallback(textCallback);
