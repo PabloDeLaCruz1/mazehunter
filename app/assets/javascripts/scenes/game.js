@@ -45,16 +45,14 @@ for (let layer of map.layers){
         grid[r][c] = 1;
       }
     }
+
+    finder.setGrid(grid);
+    finder.setAcceptableTiles([0]);
+
+    // ggrid = grid; // DEBUGGING
+
+    return finder;
   }
-}
-
-finder.setGrid(grid);
-finder.setAcceptableTiles([0]);
-
-// ggrid = grid; // DEBUGGING
-
-return finder;
-}
 
 function collidePlayerEnemy(player, enemy) {
   if(player.items.swordCount) {
@@ -101,16 +99,14 @@ function enemyWins(player, enemy) {
   }
 }
 
-function collectItem(player, item) {
-  player.setTint(0xff0000);
 
-  console.log(player);
-  
-  console.log(`${item.name} added to inventory`);
+  function collectItem(player, item) {
+    player.setTint(0xff0000);
 
+    console.log(player);
 
-  item.destroy();
-}
+    console.log(`${item.name} added to inventory`);
+
 
 function collidePlayerSword(player, sword) {
   // game logic
@@ -137,101 +133,93 @@ function collidePlayerDiamond(player, diamond) {
   diamond.destroy();
 }
 
-GameScene = new Phaser.Class({
+
+  GameScene = new Phaser.Class({
 
     Extends: Phaser.Scene,
 
     initialize:
 
 
-        function GameScene() {
-            Phaser.Scene.call(this, {
-                key: 'GameScene'
-            });
-        },
+      function GameScene() {
+        Phaser.Scene.call(this, {
+          key: 'GameScene'
+        });
+      },
     preload: function () {
       // load the map for this level
+      this.load.image('white-smoke', gameAssets.smokeParticle);
 
       this.load.image('stats-bar', 'assets/button-start.png');
 
       var tilemapName = "mainmap";
-      var tilemapFilePath = `/assets/${tilemapName}.json`;
+      var tilemapFilePath = gameAssets.mainMap;
       this.load.tilemapTiledJSON(tilemapName, tilemapFilePath);
       var tilesetNames = ['horror_rpg_tileset1', 'horror_rpg_tileset2', 'horror_rpg_tileset3', 'horror_rpg_tileset4', 'horror_rpg_tileset5', 'horror_rpg_tileset6'];
-      tilesetNames.forEach((name)=>{
-        this.load.image(name, `/assets/${name}.png`);
+      tilesetNames.forEach((name) => {
+        this.load.image(name, gameAssets[name]);
       });
 
-      this.createMap = function(tilemapName){
+      this.createMap = function (tilemapName) {
         const map = this.make.tilemap({
-            key: tilemapName
-            // tileWidth: 32,
-            // tileHeight: 32
+          key: tilemapName
+
         });
         this.map = map;
         gmap = map; // DEBUGGING
-        console.log(gmap);
-        
-        map.tilesets.forEach((tileset)=>{
+
+
+        map.tilesets.forEach((tileset) => {
           map.addTilesetImage(tileset.name, tileset.name);
         });
-        
-        map.layers.forEach((layer)=>{
+
+        map.layers.forEach((layer) => {
           map.createDynamicLayer(layer.name, map.tilesets);
         });
 
-        var tilemapLayers = map.layers.map((layer)=>{
+        var tilemapLayers = map.layers.map((layer) => {
           return layer.tilemapLayer;
         })
-        this.gameContainer = this.add.container(0,0,tilemapLayers);
+        this.gameContainer = this.add.container(0, 0, tilemapLayers);
         gcontainer = this.gameContainer; // DEBUGGING
-        // OLD MAP CREATION CODE
-        // const magecityTileSet = map.addTilesetImage( "magecity", "magecity");
-        // const wallTileSet = map.addTilesetImage( "walls", "walls");
-        // const treesTileSet = map.addTilesetImage( "trees_plants", "trees");
-        // const dungeonTileSet = map.addTilesetImage( "ProjectUtumno_full", "dungeon");
-        
-        // var tilesets = [magecityTileSet, wallTileSet, treesTileSet, dungeonTileSet];
-        // var tilesets = map.tilesets;
-        // map.createDynamicLayer("bottomLayer", tilesets);
-        // map.createDynamicLayer("mediumLayer", tilesets);
-        // map.createDynamicLayer("topLayer", tilesets);
-        // map.createDynamicLayer("treeLayer", tilesets);
 
         return map;
       }
 
       // Helper functions
       // shortcut for this.physics.add.sprite
-      this.physicsAdd = function(x, y, spriteKey){
+      this.physicsAdd = function (x, y, spriteKey) {
         let aligned = m(x, y);
         var object = this.physics.add.sprite(aligned.x, aligned.y, spriteKey);
         // object.setMask(this.circleMask);
         return object;
       }
       // creates map colliders from layer properties
-      this.createMapCollider = function(){
+      this.createMapCollider = function () {
         //TODO: change property "Collides" to "collides"
-        this.map.layers.forEach((layer)=>{
-          layer.tilemapLayer.setCollisionByProperty({collides: true});
+        this.map.layers.forEach((layer) => {
+          layer.tilemapLayer.setCollisionByProperty({
+            collides: true
+          });
         })
       }
 
-      this.addMapCollider = function(object){
+      this.addMapCollider = function (object) {
         // adds collision between the given objects and each map layer in layers
-        this.map.layers.forEach((layer)=>{
+        this.map.layers.forEach((layer) => {
           this.physics.add.collider(object, layer.tilemapLayer)
         });
       }
 
       this.createSword = function(x,y){
         var sword = this.physicsAdd(x,y,'attack').setDisplaySize(60, 30);
+
         sword.setOrigin(0);
         return sword;
       }
 
-      this.createDiamond = function(x,y){
-        var diamond = this.physicsAdd(x,y,'diamond');
+      this.createDiamond = function (x, y) {
+        var diamond = this.physicsAdd(x, y, 'diamond');
         diamond.setOrigin(0);
         return diamond;
       }
@@ -421,11 +409,7 @@ GameScene = new Phaser.Class({
         cursors = this.input.keyboard.createCursorKeys();
         //   scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
-        // setTimeout(() => {
-        //     collectItem(player, items.sword)
-        // }, 1000)
-        // setTimeout(() => {
-        //     console.log(player.inventory);
+
 
         // }, 2000)
         // physics collisions
@@ -435,98 +419,216 @@ GameScene = new Phaser.Class({
         this.physics.add.overlap(player, diamond, collidePlayerDiamond);
         this.physics.add.overlap(player, enemy1, collidePlayerEnemy);
         this.physics.add.overlap(player, enemy2, collidePlayerEnemy);
+      // change player's hitbox size
+//       player.body.setSize(20, 20);
+//       player.body.setOffset(14, 28);
 
-        //Camera Layer
-        // var camera1 = this.cameras.add(0, 0, 1200, 850).setZoom(.5);
+      player.setDepth(10)
+      //   //Player animations
+      const anims = this.anims;
+      anims.create({
+        key: "left",
+        frames: anims.generateFrameNumbers('zombi', {
+          start: 3,
+          end: 5
+        }),
+        frameRate: 10,
+        repeat: -1
+      });
+      anims.create({
+        key: "idle",
+        frames: [{
+          key: 'zombi',
+          frame: 1
+        }],
+        frameRate: 10,
+        repeat: -1
+      });
+      anims.create({
+        key: "right",
+        frames: anims.generateFrameNumbers('zombi', {
+          start: 6,
+          end: 8
+        }),
+        frameRate: 10,
+        repeat: -1
+      });
+      anims.create({
+        key: "up",
+        frames: anims.generateFrameNumbers('zombi', {
+          start: 9,
+          end: 11
+        }),
+        frameRate: 10,
+        repeat: -1
+      });
+      anims.create({
+        key: "down",
+        frames: anims.generateFrameNumbers('zombi', {
+          start: 0,
+          end: 2
+        }),
+        frameRate: 10,
+        repeat: -1
+      });
 
-        this.cameras.main.startFollow(player, true, 0.015, 0.015).setZoom(1);
+      //   //Enable keyboard movement
+      cursors = this.input.keyboard.createCursorKeys();
+      //   scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
-        //  Enable lights and set a dark ambient color
-        // this.lights.enable().setAmbientColor(0x333333);
-
-        // //  Add an image and set it to use Lights2D
-        // // var robot = this.add.image(-100, 0, 'robot').setOrigin(0).setScale(0.7);
-
-        // this.cameras.main.setPipeline('Light2D');
-
-        // //  Our spotlight. 100px radius and white in color.
-        // var light = this.lights.addLight(180, 80, 200).setColor(0xffffff).setIntensity(2);
-
-        // //  Track the pointer
-        // this.input.on('pointermove', function (pointer) {
-
-        //     light.x = pointer.x;
-        //     light.y = pointer.y;
-
-        // });
+      bombs = this.physics.add.group();
 
 
-        map.layers[2].tilemapLayer.setCollisionByProperty({collides: true});
+      // setTimeout(() => {
+      //     collectItem(player, items.sword)
+      // }, 1000)
+      // setTimeout(() => {
+      //     console.log(player.inventory);
+
+      // }, 2000)
+      // physics collisions
+      //TODO refactor to use player and item class from ./objects
+      this.addMapCollider(player);
+      this.physics.add.overlap(player, sword1, collidePlayerSword);
+      this.physics.add.overlap(player, diamond1, collidePlayerDiamond);
+      this.physics.add.overlap(player, enemy1, collidePlayerEnemy);
+      this.physics.add.overlap(player, enemy2, collidePlayerEnemy);
+
+      //Camera Layer
+      // var camera1 = this.cameras.add(0, 0, 1200, 850).setZoom(.5);
+
+      this.cameras.main.startFollow(player, true, 0.015, 0.015).setZoom(1);
+
+      //  Enable lights and set a dark ambient color
+      // this.lights.enable().setAmbientColor(0x333333);
+
+      // //  Add an image and set it to use Lights2D
+      // // var robot = this.add.image(-100, 0, 'robot').setOrigin(0).setScale(0.7);
+
+      // this.cameras.main.setPipeline('Light2D');
+
+      // //  Our spotlight. 100px radius and white in color.
+      // var light = this.lights.addLight(180, 80, 200).setColor(0xffffff).setIntensity(2);
+
+      // //  Track the pointer
+      // this.input.on('pointermove', function (pointer) {
+
+      //     light.x = pointer.x;
+      //     light.y = pointer.y;
+
+      // });
 
 
-        //Use this to debug collidable walls.
-//         const debugGraphics = this.add.graphics().setAlpha(0.75);
-// map.layers[2].tilemapLayer.renderDebug(debugGraphics, {
-//   tileColor: null, // Color of non-colliding tiles
-//   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
-//   faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
-// });
+      map.layers[2].tilemapLayer.setCollisionByProperty({
+        collides: true
+      });
 
-    // reset camera effects
-    this.cameras.main.resetFX();
+
+      //Particles and effects
+
+      let whiteSmoke = new Array();
+      let posX = 0;
+      let posY;
+      for (let i = 0; i < 10; i++) {
+
+        whiteSmoke[i] = new Array();
+        posX += 200;
+        posY = 0;
+        for (let j = 0; j < 10; j++) {
+          posY += 150;
+          whiteSmoke[i][j] = this.add.particles('white-smoke').createEmitter({
+
+            x: 100,
+            y: 100,
+            speed: {
+              min: 10,
+              max: 200
+            },
+            angle: {
+              min: 0,
+              max: 360
+            },
+            scale: {
+              start: 1,
+              end: 0
+            },
+            alpha: {
+              start: 0,
+              end: 0.02
+            },
+            lifespan: 2000,
+            //active: false
+          });
+          whiteSmoke[i][j].reserve(1000);
+          whiteSmoke[i][j].setPosition(posX, posY);
+        }
+
+      }
+
+      
+
+
+      //Use this to debug collidable walls.
+      //         const debugGraphics = this.add.graphics().setAlpha(0.75);
+      // map.layers[2].tilemapLayer.renderDebug(debugGraphics, {
+      //   tileColor: null, // Color of non-colliding tiles
+      //   collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+      //   faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+      // });
     },
       
   //UPATE
 
     update: function (time, delta) {
-        if (gameOver) {
-            return;
-        }
+      if (gameOver) {
+        return;
+      }
 
-        updateSpotlight(this.spotlight, player.x, player.y);
-        updateSpotlight(this.circle, player.x, player.y);
+      updateSpotlight(this.spotlight, player.x, player.y);
+      updateSpotlight(this.circle, player.x, player.y);
 
 
-        // Stop any previous movement from the last frame
-        // cursors = this.input.keyboard.createCursorKeys();
-        let speed = 175;
-        let prevVelocity = player.body.velocity.clone();
+      // Stop any previous movement from the last frame
+      // cursors = this.input.keyboard.createCursorKeys();
+      let speed = 175;
+      let prevVelocity = player.body.velocity.clone();
 
-        if (prevVelocity.x == 0 && prevVelocity.y == 0) {
-            player.anims.play('idle');
-        }
-        player.body.setVelocity(0);
+      if (prevVelocity.x == 0 && prevVelocity.y == 0) {
+        player.anims.play('idle');
+      }
+      player.body.setVelocity(0);
 
-        // Horizontal movement
-        if (cursors.left.isDown) {
-            player.body.setVelocityX(-speed);
-            player.anims.play('left', true);
-        } else if (cursors.right.isDown) {
-            player.body.setVelocityX(speed);
-            player.anims.play('right', true);
-        }
+      // Horizontal movement
+      if (cursors.left.isDown) {
+        player.body.setVelocityX(-speed);
+        player.anims.play('left', true);
+      } else if (cursors.right.isDown) {
+        player.body.setVelocityX(speed);
+        player.anims.play('right', true);
+      }
 
-        // Vertical movement
-        if (cursors.up.isDown) {
-            player.body.setVelocityY(-speed);
-            player.anims.play('up', true);
-        } else if (cursors.down.isDown) {
-            player.body.setVelocityY(speed);
-            player.anims.play('down', true);
-        }
+      // Vertical movement
+      if (cursors.up.isDown) {
+        player.body.setVelocityY(-speed);
+        player.anims.play('up', true);
+      } else if (cursors.down.isDown) {
+        player.body.setVelocityY(speed);
+        player.anims.play('down', true);
+      }
 
-        // Normalize and scale the velocity so that player can't move faster along a diagonal
-        player.body.velocity.normalize().scale(speed);
+      // Normalize and scale the velocity so that player can't move faster along a diagonal
+      player.body.velocity.normalize().scale(speed);
 
         // //Updates Timer
         timer_text.setText(Math.floor(10000 - timer.getElapsed()));
 
+
     },
 
-    render: function(){
-      
+    render: function () {
+
     }
 
-});
+  });
 
 })();

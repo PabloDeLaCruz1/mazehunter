@@ -55,7 +55,7 @@ let config = {
             },
         }
     },
-    scene: [PreLoadScene, MenuScene, GameScene, HowToScene],
+    scene: [PreLoadScene, MenuScene, GameScene, HowToScene, EndingScene],
 };
 let player = {
     // type: "",
