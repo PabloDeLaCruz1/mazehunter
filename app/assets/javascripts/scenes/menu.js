@@ -180,11 +180,7 @@ let MenuScene = new Phaser.Class({
 
     whiteSmoke2.setPosition(1000, 5);
     
-
-
-
   },
-
 
   update: function () {
 
@@ -195,9 +191,5 @@ let MenuScene = new Phaser.Class({
   goToHowTo: function () {
     this.game.scene.start("HowToScene")
 }
-
-  
-
-
 
 });

@@ -22,7 +22,7 @@ let EndingScene = new Phaser.Class({
     },
     create: function () {
 
-        if (gameOver === false){
+        if (gameOver === true){
             this.add.image(600, 400, 'game-over-background').setDisplaySize(1200, 900);
 
             this.add.sprite(600, 200, 'game-over-logo');
@@ -45,7 +45,9 @@ let EndingScene = new Phaser.Class({
         
             //Button Events 
             tryAgainButton.once('pointerup', function () {
-              this.scene.start('GameScene');
+                
+               this.scene.start("GameScene");
+
             }, this);
             menuButton.once('pointerup', function () {
               this.scene.start('MenuScene');

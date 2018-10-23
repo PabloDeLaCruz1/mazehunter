@@ -112,6 +112,11 @@ let PreLoadScene = new Phaser.Class({
     frameHeight: 48
     });
 
+    this.load.spritesheet('hero-player', 'assets/hero.png', {
+    frameWidth: 48,
+    frameHeight: 48
+    });
+
     // load masks for the spotlight
     this.load.image('mask1', gameAssets.mask1);
     this.load.image('mask2', gameAssets.mask2);
@@ -127,7 +132,7 @@ let PreLoadScene = new Phaser.Class({
 },
 
 create: function() {
-    //   //Player animations
+    //Player animations
     const anims = this.anims;
     anims.create({
         key: "misa-left-walk",
@@ -173,8 +178,104 @@ create: function() {
         frameRate: 10,
         repeat: -1
     });
+
+    //Player animations
+    anims.create({
+    key: "left-hero",
+    frames: anims.generateFrameNumbers('hero-player', {
+        start: 66,
+        end: 68
+    }),
+    frameRate: 10,
+    repeat: -1
+    });
+
+    anims.create({
+    key: "idle-hero",
+    frames: [{
+        key: 'hero-player',
+        frame: 55
+    }],
+    frameRate: 10,
+    repeat: -1
+    });
+    anims.create({
+    key: "right-hero",
+    frames: anims.generateFrameNumbers('hero-player', {
+        start: 78,
+        end: 80
+    }),
+    frameRate: 10,
+    repeat: -1
+    });
+    anims.create({
+    key: "up-hero",
+    frames: anims.generateFrameNumbers('hero-player', {
+        start: 90,
+        end: 92
+    }),
+    frameRate: 10,
+    repeat: -1
+    });
+    anims.create({
+    key: "down-hero",
+    frames: anims.generateFrameNumbers('hero-player', {
+        start: 54,
+        end: 56
+    }),
+    frameRate: 10,
+    repeat: -1
+    });
+
+    //Zombi animations
+    anims.create({
+        key: "left",
+        frames: anims.generateFrameNumbers('zombi', {
+        start: 3,
+        end: 5
+        }),
+        frameRate: 10,
+        repeat: -1
+    });
+    anims.create({
+        key: "idle",
+        frames: [{
+        key: 'zombi',
+        frame: 1
+        }],
+        frameRate: 10,
+        repeat: -1
+    });
+    anims.create({
+        key: "right",
+        frames: anims.generateFrameNumbers('zombi', {
+        start: 6,
+        end: 8
+        }),
+        frameRate: 10,
+        repeat: -1
+    });
+    anims.create({
+        key: "up",
+        frames: anims.generateFrameNumbers('zombi', {
+        start: 9,
+        end: 11
+        }),
+        frameRate: 10,
+        repeat: -1
+    });
+    anims.create({
+        key: "down",
+        frames: anims.generateFrameNumbers('zombi', {
+        start: 0,
+        end: 2
+        }),
+        frameRate: 10,
+        repeat: -1
+    });
+
     //console.log("Preload complete, running main world scene now")
-    this.game.scene.start("GameScene")
+    this.game.scene.start("MenuScene")
 
   },
 
