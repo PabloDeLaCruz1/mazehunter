@@ -21,10 +21,7 @@ Rails.application.routes.draw do
   get 'game/editor', to: "game_editor#index", as: 'game_editor'  
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   resources :users, except: [:new]
-<<<<<<< HEAD
   resources :profiles
   root "welcome#index", as: "welcome"
-=======
->>>>>>> origin
 end
 

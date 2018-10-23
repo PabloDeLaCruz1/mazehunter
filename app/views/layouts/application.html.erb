@@ -2,26 +2,26 @@
 <html>
   <head>
     <title>Mazehunter</title>
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-    <script src="//cdn.jsdelivr.net/npm/phaser@3.14.0/dist/phaser.js"></script>
-    <script src='http://use.edgefonts.net/nosifer.js'></script>
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+      <%= csrf_meta_tags %>
+      <%= csp_meta_tag %>
+      <script src="//cdn.jsdelivr.net/npm/phaser@3.14.0/dist/phaser.js"></script>
+      <script src='http://use.edgefonts.net/nosifer.js'></script>
+        <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+        <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 
   </head>
 
-  <body>
+<body>
 
   <p class="navbar-text pull-right">
-<% if user_signed_in? && controller_name == "profiles" %>
-  <%= link_to "Logout", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
-  <%= link_to "Game", welcome_path %>
-<% elsif user_signed_in? %>
-  <%= link_to "Logout", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
-  <%= link_to "Profile", profile_path(current_user), :class => 'navbar-link' %> 
-  <% else %>
-<% end %>
+    <% if user_signed_in? && controller_name == "profiles" %>
+    <%= link_to "Logout", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
+    <%= link_to "Game", welcome_path %>
+    <% elsif user_signed_in? %>
+    <%= link_to "Logout", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
+    <%= link_to "Profile", profile_path(current_user), :class => 'navbar-link' %> 
+    <% else %>
+    <% end %>
 
 
 
