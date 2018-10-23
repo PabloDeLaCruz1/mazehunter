@@ -142,7 +142,7 @@
       // load the map for this level
       this.load.image('white-smoke', gameAssets.smokeParticle);
 
-      this.load.image('stats-bar', 'assets/button-start.png');
+      this.load.image('stats-bar', gameAssets.buttonStart);
 
       var tilemapName = "mainmap";
       var tilemapFilePath = gameAssets.mainMap;
