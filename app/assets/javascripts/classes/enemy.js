@@ -65,11 +65,43 @@ const Enemy = (function(){
     }
   }
 
+  function animate(){
+    // find out which direction enemy is going,
+    // based on current position vs old position
+    if      (this.x > this.oldX) this.direction = 'right';
+    else if (this.x < this.oldX) this.direction = 'left';
+    else if (this.y > this.oldY) this.direction = 'down';
+    else if (this.y < this.oldY) this.direction = 'up';
+    else                         this.direction = 'idle';
+    
+    // if current direction is different from old one, play the new animation
+    if (this.direction != this.oldDirection){
+      this.anims.play(this.animKeys[this.direction]);
+    }
+
+    // update old values to reflect new ones
+    this.oldDirection = this.direction;
+    this.oldX = this.x;
+    this.oldY = this.y;
+  }
+
   return function(enemy){
     enemy.setOrigin(0,0.5);
     enemy.pathSet = false;
+    enemy.oldX = enemy.x;
+    enemy.oldY = enemy.y;
+    enemy.animKeys = {
+      idle: 'idle',
+      up: 'up',
+      down: 'down',
+      left: 'left',
+      right: 'right'
+    }
+    enemy.oldDirection = 'idle';
+    enemy.direction = 'idle';
     enemy.createPatrol = createPatrol;
     enemy.patrol = patrol;
+    enemy.animate = animate;
     return enemy;
   }
 })();
