@@ -86,4 +86,4 @@ test:
 #
 production:
   <<: *default
-  database: mazehunter_production
+  url: <%= ENV['DATABASE_URL'] %>
