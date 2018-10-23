@@ -203,6 +203,13 @@
         });
       }
 
+      this.createGoal = function(x,y){
+        var goal = this.physicsAdd(x,y);
+        goal.setOrigin(0,0);
+        goal.setSize(32,32);
+        return goal;
+      }
+
       this.createSword = function (x, y) {
         var sword = this.physicsAdd(x, y, 'attack').setDisplaySize(60, 30);
 
@@ -216,10 +223,31 @@
         return diamond;
       }
 
+      this.createEnemy = function(fromX, fromY, toX, toY){
+        // this function creates a single enemy, that spawns at
+        // (fromX, fromY), and patrols to (toX, toY), and keeps doing the patrol.
+        // the coordinates passed in are GAME coordinates, not TILEMAP coordinates.
+        var enemy = Enemy(this.physicsAdd(fromX, fromY, 'zombi'));
+        enemy.createPatrol(t(toX, toY));
+        return enemy;
+      }
+
+      this.createEnemies = function(patrolArray){
+        // this function creates a bunch of enemies
+        var enemies = patrolArray.map((patrol)=>{
+          return this.createEnemy(patrol.fromX, patrol.fromY, patrol.toX, patrol.toY);
+        })
+        enemies.animate = function(){
+          this.forEach((enemy)=>{
+            if (enemy.active) enemy.animate();
+          });
+        }
+        return enemies;
+      }
+
     },
 
     create: function () {
-
       let background_music = this.sound.add("background-music");
       // background_music.play();
       background_music.pause();
@@ -267,14 +295,22 @@
       this.gameContainer.setMask(this.spotlightMask);
 
       // add some enemies
-      var enemy1 = Enemy(this.physicsAdd(1800, 1116, 'zombi'));
-      var enemy2 = Enemy(this.physicsAdd(266, 490, 'zombi'));
+      // OLD WAY
+      // var enemy1 = Enemy(this.physicsAdd(1800, 1224, 'zombi'));
+      // var enemy1 = this.createEnemy(1800,1224, 2088,1116);
+      // var enemy2 = Enemy(this.physicsAdd(266, 490, 'zombi'));
 
       // set the patrol path that the enemies will follow
       // below lines commented out until pathfinder is working with new map
-      enemy1.createPatrol(t(2088, 1116));
+      // enemy1.createPatrol(t(2088, 1116));
       // enemy2.createPatrol(t(410,230));
 
+      // NEW WAY
+      // TODO: this array should come from the DB
+      this.enemies = this.createEnemies([
+        {fromX: 1800, fromY: 1224, toX: 2088, toY: 1116},
+        {fromX: 1656, fromY: 1296, toX: 1872, toY: 1224},
+      ])
       // diamond1 = this.createDiamond(288, 320);
       // diamond1.setOrigin(0,0);
 
@@ -289,7 +325,7 @@
 
       // TODO: move this logic into a createPlayer function
       player = this.physicsAdd(2085, 1584, 'zombi');
-      player.lives = 0;
+      player.lives = 3;
       player.items = {};
       player.items.swordCount = 0;
       player.items.diamondCount = 0;
@@ -421,16 +457,16 @@
       this.addMapCollider(player);
       this.physics.add.overlap(player, sword, collidePlayerSword);
       this.physics.add.overlap(player, diamond, collidePlayerDiamond);
-      this.physics.add.overlap(player, enemy1, collidePlayerEnemy);
-      this.physics.add.overlap(player, enemy2, collidePlayerEnemy);
+      this.enemies.forEach((enemy)=>{
+        this.physics.add.overlap(player, enemy, collidePlayerEnemy);
+      })
+      // this.physics.add.overlap(player, enemy1, collidePlayerEnemy);
+      // this.physics.add.overlap(player, enemy2, collidePlayerEnemy);
       // change player's hitbox size
       //       player.body.setSize(20, 20);
       //       player.body.setOffset(14, 28);
 
       player.setDepth(10)
-      //   //Player animations
-
-
 
       // setTimeout(() => {
       //     collectItem(player, items.sword)
@@ -536,7 +572,7 @@
       updateSpotlight(this.spotlight, player.x, player.y);
       updateSpotlight(this.circle, player.x, player.y);
 
-
+      this.enemies.animate();
       // Stop any previous movement from the last frame
       // cursors = this.input.keyboard.createCursorKeys();
       let speed = 175;
