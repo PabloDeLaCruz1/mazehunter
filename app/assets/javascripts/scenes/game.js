@@ -244,6 +244,10 @@
     create: function () {
 
       let background_music = this.sound.add("background-music");
+      let background_whispers = this.sound.add("background-whispers")
+
+      background_music.play();
+      background_whispers.play();
 
 
       const map = this.createMap("mainmap");
@@ -342,7 +346,7 @@
 
       graphics = this.add.graphics();
       graphics.fillStyle(0x000000, 0.3);
-      graphics.fillRect(0, 0, 960, 960);
+
       graphics.setVisible(true);
 
       let diamond = this.createDiamond(2016, 1440);
@@ -516,9 +520,6 @@
     //UPATE
 
     update: function (time, delta) {
-      if(player.active) {
-        player.anims.play('left-hero', true);
-      }
       if (gameOver) {
         return;
       }

@@ -15,13 +15,15 @@ let MenuScene = new Phaser.Class({
     this.load.image('white-smoke', gameAssets.smokeParticle);
     this.load.image('main-logo', gameAssets.mainLogo);
     this.load.image('background', gameAssets.menuBackground);
-
     this.load.image('button-start', gameAssets.buttonStart);
 
     this.load.bitmapFont('desyrel', gameAssets.desyrel, gameAssets.desyrelXml);
 
   },
   create: function () {
+
+    let background_menu_ambience = this.sound.add("background-menu-ambience")
+    background_menu_ambience.play();
 
     this.add.sprite(600, 400, 'background');
 
@@ -34,6 +36,7 @@ let MenuScene = new Phaser.Class({
 
     //Button Events 
     startButton.once('pointerup', function () {
+      background_menu_ambience.destroy();
       this.scene.start('GameScene');
     }, this);
     howToButton.once('pointerup', function () {
@@ -43,7 +46,6 @@ let MenuScene = new Phaser.Class({
     [startButton, multiplayerButton, howToButton].forEach(btn => {
       btn.setInteractive();
       btn.on('pointerover', function () {
-
         this.setTint(0xff0000);
       });
       btn.on('pointerout', function () {
