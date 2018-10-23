@@ -1,17 +1,13 @@
 <div class="body-image">
-<div class="center">
-<text><h2>Log in</h2></text>
-
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  
-    <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Email" %><br>
-  
-    <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password" %><br>
-
-    <%= f.submit "Run", :style => 'height:30' 'width:50', class: "button"  %>
-
-<% end %>
-
-<%= render "devise/shared/links" %>
-</div>
+  <div class="center">
+    <text>
+      <h2>Log in</h2>
+    </text>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Email" %><br>
+      <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password" %><br>
+      <%= f.submit "Run", :style => 'height:30' 'width:50', class: "button"  %>
+    <% end %>
+    <%= render "devise/shared/links" %>
+  </div>
 </div>

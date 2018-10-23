@@ -1,7 +1,6 @@
 
 <div id="game-container">
   <%= javascript_include_tag 'game_application', 'data-turbolinks-track': 'reload' %>
-  <div id="game-container"></div>
   <div id='assets' data-menu-background="<%= image_url 'menu_background.png'%>"
     data-main-logo="<%= image_url 'main_logo.png'%>"
     data-smoke-particle="<%= image_url 'particles/smoke0.png'%>"
@@ -24,19 +23,28 @@
     data-arrow-keys="<%= image_url 'arrow-keys.png'%>"
     data-tilemap-path="<%= image_url 'mainmap.json'%>"
     data-diamond="<%= image_url 'diamond.png'%>"
-
+    data-heart="<%= image_url 'heart.png'%>"
     data-game-over-background="<%= image_url 'game_over_background.png'%>"  
-
     data-congrats-logo="<%= image_url 'congrats_logo.png'%>"  
     data-game-over-logo="<%= image_url 'game_over_logo.png'%>"  
     data-congrats-background="<%= image_url 'congrats_background.png'%>"  
     data-how-to-logo="<%= image_url 'how_to_logo.png'%>"  
     data-how-to-background="<%= image_url 'how_to_background.png'%>"  
-
+    data-diamond="<%= image_url 'diamond.png'%>"
+    data-sword-stats="<%= image_url 'sword_stats.png'%>"
+    data-hour-glass="<%= image_url 'hourglass.png'%>"
+    data-tomb-stone="<%= image_url 'tomb-stone.png'%>"
+    data-coin-pickup="<%= audio_url 'coinpickup.mp3'%>"
+    data-terror-ambience="<%= audio_url 'terror-ambience.mp3'%>"
+    data-grab-this="<%= audio_url 'grab-this.wav'%>"
+    data-zombie-death="<%= audio_url 'zombie-death.mp3'%>"
+    data-player-death="<%= audio_url 'player-death.wav'%>"
+    data-game-over-evil="<%= audio_url 'game-over-evil.wav'%>"
   >
   </div>
   <script type="text/javascript">
     let gameAssets = document.querySelector("#assets").dataset;
       let game = new Phaser.Game(config);
   </script>
+
 </div>
