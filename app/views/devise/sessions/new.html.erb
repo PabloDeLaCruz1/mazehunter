@@ -6,16 +6,9 @@
   
     <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Email" %><br>
   
-    <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password" %>
+    <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password" %><br>
 
-  <% if devise_mapping.rememberable? -%>
-  
-      <%= f.check_box :remember_me %>
-      <text><%= f.label :remember_me %><br></text>
-  
-  <% end -%>
-
-    <%= f.submit "Run", class: "button" %>
+    <%= f.submit "Run", :style => 'height:30' 'width:50', class: "button"  %>
 
 <% end %>
 

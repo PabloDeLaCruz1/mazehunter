@@ -196,4 +196,8 @@ let MenuScene = new Phaser.Class({
     this.game.scene.start("HowToScene")
 }
 
+  
+
+
+
 });
