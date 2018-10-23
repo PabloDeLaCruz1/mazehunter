@@ -163,7 +163,7 @@ create: function() {
         repeat: -1
     });
     //console.log("Preload complete, running main world scene now")
-    this.game.scene.start("MenuScene")
+    this.game.scene.start("GameScene")
 
   },
 
