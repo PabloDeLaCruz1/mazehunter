@@ -389,7 +389,7 @@
 
       // console.log(this.diamondCollectSound);
 
-      timer_text = this.add.text(1090, 18, timer, {
+      timer_text = this.add.text(1100, 18, timer, {
         font: '30px Arial',
         fill: '#ffffff'
       }).setScrollFactor(0);
@@ -571,7 +571,7 @@
       player.body.velocity.normalize().scale(speed);
 
       // //Updates Timer
-      timer_text.setText(Math.floor(10000 - timer.getElapsed()));
+      timer_text.setText(parseInt(Math.floor(this.sys.game.loop.time.toString()/1000)));
 
 
     },
