@@ -2,19 +2,12 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-table {
-    font-family: 'Desyrel', sans-serif;
-    background: rgb(163, 140, 140);
-    font-family: 'Nosifer', sans-serif;
-}
 
 
 
 
 
-
-
-.body-tag {
+body {
     background-image: url("maze2.jpg");
     height: 100vh;
     width: 100%; /* You must set a specified height */
@@ -28,8 +21,11 @@ nav {
     font-family: 'Nosifer', sans-serif;
 }
 
-.header {
+.header, table, .container {
     color: rgb(172, 87, 87);
     background-color: black;
     font-family: 'Nosifer', sans-serif;
+    text-align: center;
+
 }
+

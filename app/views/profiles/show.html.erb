@@ -7,24 +7,24 @@
         <%= link_to 'Edit Profile', edit_user_registration_path %> 
     </nav><hr>
 
-
+    
         <div class="header">
             <%= @user.email %> Stats;
         </div>
-            <table>
+            <div class="container">
+                <table>
                 <tr>
                 <th>Wins  |</th> 
                 <th>Best Time  |</th>
                 <th>Total Games  </th>
             </tr>
             <tr>
-            <td><%= @profile.id %>:</td>
+            <td> 1:</td>
             <td><%= @profile.wins %>|</td>
             <td><%= @profile.best_time %>|</td>
             <td><%= @profile.total_games %></td>
         </tr>
-
+    </div>
     </table>
 </div>
-
 
