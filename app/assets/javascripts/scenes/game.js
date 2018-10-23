@@ -339,12 +339,6 @@
       //Enable keyboard movement
       cursors = cursors || this.input.keyboard.createCursorKeys();
 
-
-      graphics = this.add.graphics();
-      graphics.fillStyle(0x000000, 0.3);
-      graphics.fillRect(0, 0, 960, 960);
-      graphics.setVisible(true);
-
       let diamond = this.createDiamond(2016, 1440);
 
       sword = this.createSword(2052, 1332);
@@ -411,50 +405,15 @@
       this.enemies.forEach((enemy)=>{
         this.physics.add.overlap(player, enemy, collidePlayerEnemy);
       })
-      // this.physics.add.overlap(player, enemy1, collidePlayerEnemy);
-      // this.physics.add.overlap(player, enemy2, collidePlayerEnemy);
-      // change player's hitbox size
-      //       player.body.setSize(20, 20);
-      //       player.body.setOffset(14, 28);
 
       player.setDepth(10)
-
-      // setTimeout(() => {
-      //     collectItem(player, items.sword)
-      // }, 1000)
-      // setTimeout(() => {
-      //     console.log(player.inventory);
-
-      // }, 2000)
-      // physics collisions
-      //TODO refactor to use player and item class from ./objects
-
 
       //Camera Layer
       // var camera1 = this.cameras.add(0, 0, 1200, 850).setZoom(.5);
 
       this.cameras.main.startFollow(player, true, 0.015, 0.015).setZoom(1);
 
-      //  Enable lights and set a dark ambient color
-      // this.lights.enable().setAmbientColor(0x333333);
-
-      // //  Add an image and set it to use Lights2D
-      // // var robot = this.add.image(-100, 0, 'robot').setOrigin(0).setScale(0.7);
-
-      // this.cameras.main.setPipeline('Light2D');
-
-      // //  Our spotlight. 100px radius and white in color.
-      // var light = this.lights.addLight(180, 80, 200).setColor(0xffffff).setIntensity(2);
-
-      // //  Track the pointer
-      // this.input.on('pointermove', function (pointer) {
-
-      //     light.x = pointer.x;
-      //     light.y = pointer.y;
-
-      // });
-
-
+      //Sets collision only for the collides layer.
       map.layers[2].tilemapLayer.setCollisionByProperty({
         collides: true
       });
@@ -512,8 +471,6 @@
       //   faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
       // });
     },
-
-    //UPATE
 
     update: function (time, delta) {
       if(player.active) {
