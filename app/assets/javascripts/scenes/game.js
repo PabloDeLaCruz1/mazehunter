@@ -571,7 +571,7 @@
       player.body.velocity.normalize().scale(speed);
 
       // //Updates Timer
-      timer_text.setText(parseInt(Math.floor(this.sys.game.loop.time.toString()/1000)));
+      timer_text.setText(parseInt(Math.floor(this.sys.game.loop.time.toString()/1000)) - 3); // -3 to hotfix timer not starting at 0 because of loading time
 
 
     },
