@@ -77,17 +77,10 @@
     if (player.lives == 0) {
 
       player_death.play();
-
-      if (player_death) {
-        player.destroy();
-        game_over.play();
-      }
-      gameOver = true;
-      if (gameOver) {
-        this.time.delayedCall(500, function () {
-          this.scene.restart();
-        }, [], this);
-      }
+      player.destroy();
+      game_over.play();
+      gameOver = true
+      enemy.scene.scene.start('EndingScene');
 
     } else {
 
@@ -109,8 +102,6 @@
 
     // update visuals
     attack_text.setText(player.items.swordCount);
-
-    console.log(this)
     // play any sounds
     swordCollectSound.play();
 
@@ -139,6 +130,9 @@
       });
     },
     preload: function () {
+
+      game.gameScene = this;
+
       // load the map for this level
       this.load.image('white-smoke', gameAssets.smokeParticle);
 
@@ -183,7 +177,7 @@
       this.physicsAdd = function (x, y, spriteKey) {
         let aligned = m(x, y);
         var object = this.physics.add.sprite(aligned.x, aligned.y, spriteKey);
-        object.setMask(this.circleMask);
+        // object.setMask(this.circleMask);
         return object;
       }
       // creates map colliders from layer properties
@@ -248,9 +242,9 @@
     },
 
     create: function () {
+
       let background_music = this.sound.add("background-music");
-      // background_music.play();
-      background_music.pause();
+
 
       const map = this.createMap("mainmap");
 
@@ -292,7 +286,7 @@
       this.circle = circle;
       this.spotlightMask = new Phaser.Display.Masks.BitmapMask(this, spotlight);
       this.circleMask = new Phaser.Display.Masks.BitmapMask(this, circle);
-      this.gameContainer.setMask(this.spotlightMask);
+      // this.gameContainer.setMask(this.spotlightMask);
 
       // add some enemies
       // OLD WAY
@@ -324,6 +318,7 @@
       });
 
       // TODO: move this logic into a createPlayer function
+
       player = this.physicsAdd(2085, 1577, 'zombi');
       player.lives = 3;
       player.items = {};
@@ -341,56 +336,9 @@
       player.body.setSize(20, 20);
       player.body.setOffset(14, 28);
 
-      //Player animations
-      const anims = this.anims;
-      anims.create({
-        key: "left",
-        frames: anims.generateFrameNumbers('zombi', {
-          start: 3,
-          end: 5
-        }),
-        frameRate: 10,
-        repeat: -1
-      });
-      anims.create({
-        key: "idle",
-        frames: [{
-          key: 'zombi',
-          frame: 1
-        }],
-        frameRate: 10,
-        repeat: -1
-      });
-      anims.create({
-        key: "right",
-        frames: anims.generateFrameNumbers('zombi', {
-          start: 6,
-          end: 8
-        }),
-        frameRate: 10,
-        repeat: -1
-      });
-      anims.create({
-        key: "up",
-        frames: anims.generateFrameNumbers('zombi', {
-          start: 9,
-          end: 11
-        }),
-        frameRate: 10,
-        repeat: -1
-      });
-      anims.create({
-        key: "down",
-        frames: anims.generateFrameNumbers('zombi', {
-          start: 0,
-          end: 2
-        }),
-        frameRate: 10,
-        repeat: -1
-      });
-
       //Enable keyboard movement
-      cursors = this.input.keyboard.createCursorKeys();
+      cursors = cursors || this.input.keyboard.createCursorKeys();
+
 
       graphics = this.add.graphics();
       graphics.fillStyle(0x000000, 0.3);
@@ -433,6 +381,7 @@
       timer = this.time.addEvent({
         delay: 10000
       });
+
 
       lives_text = this.add.text(910, 18, player.lives, {
         font: '30px Arial',
@@ -567,12 +516,16 @@
     //UPATE
 
     update: function (time, delta) {
+      if(player.active) {
+        player.anims.play('left-hero', true);
+      }
       if (gameOver) {
         return;
       }
 
       updateSpotlight(this.spotlight, player.x, player.y);
       updateSpotlight(this.circle, player.x, player.y);
+
 
       this.enemies.animate();
       // Stop any previous movement from the last frame
@@ -581,26 +534,27 @@
       let prevVelocity = player.body.velocity.clone();
 
       if (prevVelocity.x == 0 && prevVelocity.y == 0) {
-        player.anims.play('idle');
+        player.anims.play('idle-hero');
       }
       player.body.setVelocity(0);
 
       // Horizontal movement
       if (cursors.left.isDown) {
         player.body.setVelocityX(-speed);
-        player.anims.play('left', true);
+        player.anims.play('left-hero', true);
+        
       } else if (cursors.right.isDown) {
         player.body.setVelocityX(speed);
-        player.anims.play('right', true);
+        player.anims.play('right-hero', true);
       }
 
       // Vertical movement
       if (cursors.up.isDown) {
         player.body.setVelocityY(-speed);
-        player.anims.play('up', true);
+        player.anims.play('up-hero', true);
       } else if (cursors.down.isDown) {
         player.body.setVelocityY(speed);
-        player.anims.play('down', true);
+        player.anims.play('down-hero', true);
       }
 
       // Normalize and scale the velocity so that player can't move faster along a diagonal
@@ -608,7 +562,6 @@
 
       // //Updates Timer
       timer_text.setText(parseInt(Math.floor(this.sys.game.loop.time.toString()/1000)) - 3); // -3 to hotfix timer not starting at 0 because of loading time
-
 
     },
 
