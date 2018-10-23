@@ -109,7 +109,7 @@ let PreLoadScene = new Phaser.Class({
     frameHeight: 48
     });
 
-    this.load.spritesheet('hero-player', 'assets/hero.png', {
+this.load.spritesheet('hero-player', gameAssets.hero, {
     frameWidth: 48,
     frameHeight: 48
     });

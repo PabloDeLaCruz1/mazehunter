@@ -177,7 +177,7 @@
       this.physicsAdd = function (x, y, spriteKey) {
         let aligned = m(x, y);
         var object = this.physics.add.sprite(aligned.x, aligned.y, spriteKey);
-        // object.setMask(this.circleMask);
+        object.setMask(this.circleMask);
         return object;
       }
       // creates map colliders from layer properties
@@ -286,7 +286,7 @@
       this.circle = circle;
       this.spotlightMask = new Phaser.Display.Masks.BitmapMask(this, spotlight);
       this.circleMask = new Phaser.Display.Masks.BitmapMask(this, circle);
-      // this.gameContainer.setMask(this.spotlightMask);
+      this.gameContainer.setMask(this.spotlightMask);
 
       // add some enemies
       // OLD WAY

@@ -49,7 +49,7 @@ let config = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true, // for testing, remove in production
+            //debug: true, // for testing, remove in production
             gravity: {
                 y: 0
             },
