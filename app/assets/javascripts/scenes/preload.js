@@ -84,30 +84,29 @@ let PreLoadScene = new Phaser.Class({
     });
 
     //Game Assests
-    this.load.image('diamond', 'assets/diamond.png', { 
+    this.load.image('diamond', gameAssets.diamond, { 
     frameHeight: 24,
     frameWidth: 32 
     });
 
-    //Image assets
-    this.load.image('diamond-stats', 'assets/diamond.png');
-    this.load.image('attack', 'assets/sword_stats.png');
-    this.load.image('hourglass-stats', 'assets/hourglass.png');
-    this.load.image('heart-stats', 'assets/heart.png');
-    this.load.image('heart-stats', 'assets/heart.png');
+    //Imagegame assets
+    this.load.image('diamond-stats', gameAssets.diamond);
+    this.load.image('attack', gameAssets.swordStats);
+    this.load.image('hourglass-stats', gameAssets.hourGlass);
+    this.load.image('heart-stats', gameAssets.heart);
 
     //Place tomb when player dies last time ?
-    this.load.image('stomb', 'assets/tomb-stone.png');
+    this.load.image('stomb', gameAssets.tombStone);
 
-    //Audio assets
-    this.load.audio('diamond-pickup', 'assets/coinpickup.mp3');
-    this.load.audio('background-music', 'assets/terror-ambience.mp3');
-    this.load.audio('grab-sword', 'assets/grab-this.wav');
-    this.load.audio('zombie-death', 'assets/zombie-death.mp3');
-    this.load.audio('player-death', 'assets/player-death.wav');
-    this.load.audio('game-over', 'assets/game-over-evil.wav');
+    //Audiogame assets
+    this.load.audio('diamond-pickup', gameAssets.coinPickup);
+    this.load.audio('background-music', gameAssets.terrorAmbience);
+    this.load.audio('grab-sword', gameAssets.grabThis);
+    this.load.audio('zombie-death', gameAssets.zombieDeath);
+    this.load.audio('player-death', gameAssets.playerDeath);
+    this.load.audio('game-over', gameAssets.gameOverEvil);
 
-    this.load.spritesheet('zombi', 'assets/zombi.png', {
+    this.load.spritesheet('zombi', gameAssets.zombi, {
     frameWidth: 48,
     frameHeight: 48
     });
