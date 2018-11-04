@@ -3,7 +3,6 @@
 * Maze Hunter is a horror themed real-time online multiplayer maze solver strategy game. 
 
 * To play the game visit: https://mazehunter.herokuapp.com/
-* username: pdelac@ramapo.edu password: 123456
 
 Special Thanks To:
 * https://logojoy.com/ 
